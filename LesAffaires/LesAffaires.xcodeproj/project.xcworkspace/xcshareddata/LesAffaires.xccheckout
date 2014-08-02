@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>729FC8C5-BB5C-4478-ABAB-B4924EADB93C</string>
+	<key>IDESourceControlProjectName</key>
+	<string>LesAffaires</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>D77D8591-A2AB-4C77-842C-7E040CB0C1EC</key>
+		<string>https://github.com/briancouchman/LesAffaires.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>LesAffaires/LesAffaires.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>D77D8591-A2AB-4C77-842C-7E040CB0C1EC</key>
+		<string>../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/briancouchman/LesAffaires.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>D77D8591-A2AB-4C77-842C-7E040CB0C1EC</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>D77D8591-A2AB-4C77-842C-7E040CB0C1EC</string>
+			<key>IDESourceControlWCCName</key>
+			<string>LesAffaires</string>
+		</dict>
+	</array>
+</dict>
+</plist>
