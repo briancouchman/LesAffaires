@@ -4,8 +4,9 @@
       <form role="form">
           <div class="form-group">
             <label for="inputExcel">Choisr le fichier Excel source</label>
-            <input type="file" class="form-control" id="inputExcel" />
+            <input type="file" ng-file-select="onFileSelect($files)" multiple class="form-control">
           </div>
+          
       </form>
   </div>
 </div>

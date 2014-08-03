@@ -4,12 +4,15 @@ require.config({
 		angular: '../bower_components/angular/angular',
 		angularRoute: '../bower_components/angular-route/angular-route',
 		angularMocks: '../bower_components/angular-mocks/angular-mocks',
-                angularFileUpload: '../bower_components/angular-file-upload/angular-file-upload',
+                angularFileUpload: '../bower_components/ng-file-upload/angular-file-upload',
 		jquery: '../bower_components/jquery/dist/jquery',
 		'bootstrap' : '../bower_components/bootstrap/dist/js/bootstrap'
 	},
 	shim: {
-		'angular' : {'exports' : 'angular'},
+		'angular' : {
+                    deps: [],
+                    'exports' : 'angular'
+                },
 		'angularRoute': ['angular'],
 		'angularMocks': {
 			deps:['angular'],
@@ -17,15 +20,18 @@ require.config({
 		},
                 'angularFileUpload': {
                     deps: ['angular'],
-                    'exports': 'angularFileUpload'
-                },
+                    'exports': 'angular-file-upload'
+                }, 
+                
 		'bootstrap': {
 			deps:['jquery'],
 			'exports':'bootstrap'
 		}
 	},
 	priority: [
-		"angular"
+                "angular-file-upload-shim",
+		"angular",
+                "angular-file-upload"
 	]
 });
 
@@ -37,8 +43,7 @@ require( [
 
 	/*'services/',*/
 
-	'controllers/home',
-
+	'controllers/home-controller',
 
 	'routes'
 ], function(angular, app, routes) {

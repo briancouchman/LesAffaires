@@ -1,4 +1,5 @@
 var express = require('express');
+var path = require('path');
 var fs = require('fs');
 
 var app = express();
@@ -9,24 +10,15 @@ app.all('/*', function(req, res, next) {
   next();
 });
 
-app.get('/apis/jobs', function(req, res) {
-	res.sendfile('./convertcsv.json');
-});
-
-app.get('/apis/jobs/:jobName', function(req, res) {
-    fs.readFile('./convertcsv.json', 'utf8', function (err, data) {
-        if (err) {
-            console.log('Error: ' + err);
-            return;
-        }
-        data = JSON.parse(data);
-        var result = [];
-        for(var i = 0; i < data.length; i++){
-            if(data[i].job == req.params.jobName){
-                result.push(data[i]);
-            }
-        }
-        res.send(result);
+app.post('/upload', function(req, res) {
+console.log("req.file -> " + req.file);
+console.log("req.body -> " + req.body);
+console.log("req.data -> " + req.data);
+    var tempPath = req.files.file.path,
+    targetPath = path.resolve('./uploadFiles/' + req.files.file.name);
+    fs.rename(tempPath, targetPath, function(err) {
+        if (err) throw err;
+        console.log("Upload completed!");
     });
 });
 
