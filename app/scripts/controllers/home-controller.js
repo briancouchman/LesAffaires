@@ -3,10 +3,22 @@ define(['app'], function (app) {
 	return app.controller('HomeCtrl', ['$scope','$upload',
             function($scope, $upload){
                 console.log("Starting Home Controller");
+
+                var filesToUpload;
                 $scope.onFileSelect = function($files) {
-                    //$files: an array of files selected, each file has name, size, and type.
+                    filesToUpload = $files;
                     for (var i = 0; i < $files.length; i++) {
+                        var file = $files[i];
+                        console.log(file.name + " selected");
+                    }
+                }
+
+                $scope.upload = function(){
+                    //$files: an array of files selected, each file has name, size, and type.
+                   var $files = filesToUpload;
+                   for (var i = 0; i < $files.length; i++) {
                       var file = $files[i];
+                      console.log("Uploading " + file.name);
                       $scope.upload = $upload.upload({
                         url: 'http://localhost:5000/upload', //upload.php script, node.js route, or servlet url
                         // method: 'POST' or 'PUT',
@@ -23,13 +35,14 @@ define(['app'], function (app) {
                       }).success(function(data, status, headers, config) {
                         // file is uploaded successfully
                         console.log(data);
+												$scope.addressesCount = data.addresses.length;
                       });
                       //.error(...)
-                      //.then(success, error, progress); 
+                      //.then(success, error, progress);
                       //.xhr(function(xhr){xhr.upload.addEventListener(...)})// access and attach any event listener to XMLHttpRequest.
                     }
                     /* alternative way of uploading, send the file binary with the file's content-type.
-                       Could be used to upload files to CouchDB, imgur, etc... html5 FileReader is needed. 
+                       Could be used to upload files to CouchDB, imgur, etc... html5 FileReader is needed.
                        It could also be used to monitor the progress of a normal http post/put request with large data*/
                     // $scope.upload = $upload.http({...})  see 88#issuecomment-31366487 for sample code.
                   };

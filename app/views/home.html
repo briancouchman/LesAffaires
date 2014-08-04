@@ -4,9 +4,12 @@
       <form role="form">
           <div class="form-group">
             <label for="inputExcel">Choisr le fichier Excel source</label>
-            <input type="file" ng-file-select="onFileSelect($files)" multiple class="form-control">
+            <input type="file" name="excelSource" ng-file-select="onFileSelect($files)" multiple class="form-control">
+            <button type="button" class="btn btn-sm btn-primary" ng-click="upload($files)">Upload</button>
+            <br/>
+
+            {{addressesCount}} addresses found
           </div>
-          
       </form>
   </div>
 </div>
