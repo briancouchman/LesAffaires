@@ -5,6 +5,7 @@ define(['app'], function (app) {
                 console.log("Starting Home Controller");
 
                 var filesToUpload;
+								$scope.addresses = [];
                 $scope.onFileSelect = function($files) {
                     filesToUpload = $files;
                     for (var i = 0; i < $files.length; i++) {
@@ -35,7 +36,7 @@ define(['app'], function (app) {
                       }).success(function(data, status, headers, config) {
                         // file is uploaded successfully
                         console.log(data);
-												$scope.addressesCount = data.addresses.length;
+												$scope.addresses = data.addresses;
                       });
                       //.error(...)
                       //.then(success, error, progress);

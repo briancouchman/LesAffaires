@@ -8,7 +8,28 @@
             <button type="button" class="btn btn-sm btn-primary" ng-click="upload($files)">Upload</button>
             <br/>
 
-            {{addressesCount}} addresses found
+            <div ng-show="addresses.length > 0">
+              <h5>{{addresses.length}} addresses found</h5>
+              <table class="table">
+                <thead>
+                  <th>Address</th>
+                  <th>Add. comp.</th>
+                  <th>City</th>
+                  <th>Province</th>
+                  <th>Zip code</th>
+                  <th>Quantity</th>
+                </thead>
+                <tbody>
+                  <tr ng-repeat="address in addresses">
+                    <td>{{address.address}}</td>
+                    <td>{{address.add_comp}}</td>
+                    <td>{{address.city}}</td>
+                    <td>{{address.province}}</td>
+                    <td>{{address.zipcode}}</td>
+                    <td>{{address.quantity}}</td>
+                  </tr>
+                </tbody>
+              </table>
           </div>
       </form>
   </div>
