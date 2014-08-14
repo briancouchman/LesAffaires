@@ -12,6 +12,8 @@
               <h5>{{addresses.length}} addresses found</h5>
               <table class="table">
                 <thead>
+                  <th>Dest.</th>
+                  <th>Compagnie</th>
                   <th>Address</th>
                   <th>Add. comp.</th>
                   <th>City</th>
@@ -21,6 +23,8 @@
                 </thead>
                 <tbody>
                   <tr ng-repeat="address in addresses">
+                    <td>{{address.dest}}</td>
+                    <td>{{address.company}}</td>
                     <td>{{address.address}}</td>
                     <td>{{address.add_comp}}</td>
                     <td>{{address.city}}</td>
@@ -32,5 +36,109 @@
               </table>
           </div>
       </form>
+  </div>
+</div>
+
+
+<div class="row" ng-show="addresses.length > 0">
+  <div class="col-md-12">
+      <h2>Etape 2 - Definir le nombre de pages</h2>
+      <form role="form">
+          <div class="form-group">
+            <label for="pages">Entrer le nombre de pages du journal</label>
+            <input type="text" name="pages" ng-model="numberOfPages" class="form-control" ng-change="calculateThresholds()">
+            <br/>
+
+            <div ng-show="thresholdForBoxes > -1 && thresholdForLetters > -1">
+                <h5>Threshold for boxes : {{thresholdForBoxes}}</h5>
+                <h5>Threshold for letters : {{thresholdForLetters}}</h5>
+            </div>
+          </div>
+      </form>
+  </div>
+</div>
+
+
+<div class="row" ng-show="thresholdForBoxes > -1">
+  <div class="col-md-12">
+      <h2>Etape 3 - Verifier les adresses</h2>
+      <h4>For boxes</h4>
+      <table class="table">
+        <thead>
+          <th>Dest.</th>
+          <th>Compagnie</th>
+          <th>Address</th>
+          <th>Add. comp.</th>
+          <th>City</th>
+          <th>Province</th>
+          <th>Zip code</th>
+          <th>Quantity</th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="address in addresses | filter:fitsInABox">
+            <td>{{address.dest}}</td>
+            <td>{{address.company}}</td>
+            <td>{{address.address}}</td>
+            <td>{{address.add_comp}}</td>
+            <td>{{address.city}}</td>
+            <td>{{address.province}}</td>
+            <td>{{address.zipcode}}</td>
+            <td>{{address.quantity}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h4>For letters</h4>
+      <table class="table">
+        <thead>
+          <th>Dest.</th>
+          <th>Compagnie</th>
+          <th>Address</th>
+          <th>Add. comp.</th>
+          <th>City</th>
+          <th>Province</th>
+          <th>Zip code</th>
+          <th>Quantity</th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="address in addresses | filter:fitsInALetter">
+            <td>{{address.dest}}</td>
+            <td>{{address.company}}</td>
+            <td>{{address.address}}</td>
+            <td>{{address.add_comp}}</td>
+            <td>{{address.city}}</td>
+            <td>{{address.province}}</td>
+            <td>{{address.zipcode}}</td>
+            <td>{{address.quantity}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+
+      <h4>For Monos</h4>
+      <table class="table">
+        <thead>
+          <th>Dest.</th>
+          <th>Compagnie</th>
+          <th>Address</th>
+          <th>Add. comp.</th>
+          <th>City</th>
+          <th>Province</th>
+          <th>Zip code</th>
+          <th>Quantity</th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="address in addresses | filter:fitsInAMono">
+            <td>{{address.dest}}</td>
+            <td>{{address.company}}</td>
+            <td>{{address.address}}</td>
+            <td>{{address.add_comp}}</td>
+            <td>{{address.city}}</td>
+            <td>{{address.province}}</td>
+            <td>{{address.zipcode}}</td>
+            <td>{{address.quantity}}</td>
+          </tr>
+        </tbody>
+      </table>
   </div>
 </div>

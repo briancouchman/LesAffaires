@@ -18,32 +18,34 @@ require.config({
 			deps:['angular'],
 			'exports':'angular.mock'
 		},
-                'angularFileUpload': {
-                    deps: ['angular'],
-                    'exports': 'angular-file-upload'
-                }, 
-                
+    'angularFileUpload': {
+      deps: ['angular'],
+      'exports': 'angular-file-upload'
+    },
+
 		'bootstrap': {
 			deps:['jquery'],
 			'exports':'bootstrap'
 		}
 	},
 	priority: [
-                "angular-file-upload-shim",
+    "angular-file-upload-shim",
 		"angular",
-                "angular-file-upload"
+    "angular-file-upload"
 	]
 });
 
 require( [
 	'angular',
 	'angularRoute',
-        'angularFileUpload',
+  'angularFileUpload',
 	'app',
 
 	/*'services/',*/
 
 	'controllers/home-controller',
+
+	'services/newspaper-service',
 
 	'routes'
 ], function(angular, app, routes) {

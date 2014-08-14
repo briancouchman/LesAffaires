@@ -1,7 +1,7 @@
 define(['app'], function (app) {
 	'use strict';
-	return app.controller('HomeCtrl', ['$scope','$upload',
-            function($scope, $upload){
+	return app.controller('HomeCtrl', ['$scope','$upload', 'newspaperService',
+            function($scope, $upload, newspaperService){
                 console.log("Starting Home Controller");
 
                 var filesToUpload;
@@ -47,6 +47,39 @@ define(['app'], function (app) {
                        It could also be used to monitor the progress of a normal http post/put request with large data*/
                     // $scope.upload = $upload.http({...})  see 88#issuecomment-31366487 for sample code.
                   };
-            }
-       ]);
+
+
+
+
+							$scope.numberOfPages = 0;
+							$scope.thresholdForBoxes = -1;
+							$scope.thresholdForLetters = -1;
+
+							$scope.calculateThresholds = function(){
+								var itemWeight = newspaperService.getNewspaperWeight($scope.numberOfPages);
+								$scope.thresholdForBoxes = 	newspaperService.getThresholdForBoxes(itemWeight);
+								$scope.thresholdForLetters = newspaperService.getThresholdForLetters();
+							}
+
+							$scope.fitsInABox = function (item) {
+						    return item.quantity <= $scope.thresholdForBoxes && item.quantity > $scope.thresholdForLetters;
+						  };
+							$scope.fitsInALetter = function (item) {
+								return item.quantity <= $scope.thresholdForLetters;
+							};
+					}
+
+       ]).filter('fitsInABox', function() {
+				return function(item) {
+					return Math.round(item.quantity) <= $scope.thresholdForBoxes && Math.round(item.quantity) > $scope.thresholdForLetters;
+				}
+			}).filter('fitsInALetter', function() {
+				return function(item) {
+					return Math.round(item.quantity) <= $scope.thresholdForLetters;
+				}
+			}).filter('fitsInAMono', function() {
+				return function(item) {
+					return Math.round(item.quantity) > $scope.thresholdForBoxes;
+				}
+			});
 });
