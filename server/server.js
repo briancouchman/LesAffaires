@@ -1,7 +1,6 @@
 var express = require('express');
 var fs = require('fs');
 var busboy = require('connect-busboy');
-var excelParser = require('excel-parser');
 var excel = require('./excel');
 
 

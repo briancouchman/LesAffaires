@@ -1,3 +1,12 @@
+
+var excelParser = require('excel-parser');
+
+
+
+
+
+
+
 module.exports = {
   parseExcel: function (filename, callback){
       console.log("Parsing " + filename);
@@ -12,7 +21,7 @@ module.exports = {
           //console.log(records);
           this.processRecords(records, callback);
         }
-      });
+      }.bind(this));
   },
   processRecords: function (records, callback) {
     var startRow = this.getStartRow(records);
