@@ -4,13 +4,14 @@ Python
     argsparse 1.2.1
     xlrd 0.9.3
 
-    install: move to module folder, python setup.py install
+    install: unzip the module, open terminal, move to the unzippedmodule folder, type 'python setup.py install'
 
 Node
   v0.10.27
 
-  npm
-  require('express');
-  require('fs');
-  require('connect-busboy');
-  require('excel-parser');
+NPM
+  npm install express
+  npm install fs
+  npm install connect-busboy
+  npm install excel-parser
+  npm install pdfkit
