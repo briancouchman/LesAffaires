@@ -1,7 +1,7 @@
 define(['app'], function (app) {
 	'use strict';
-	return app.controller('HomeCtrl', ['$scope','$upload', 'newspaperService',
-            function($scope, $upload, newspaperService){
+	return app.controller('HomeCtrl', ['$scope','$upload', '$http', 'newspaperService',
+            function($scope, $upload, $http, newspaperService){
                 console.log("Starting Home Controller");
 
                 var filesToUpload;
@@ -67,19 +67,39 @@ define(['app'], function (app) {
 							$scope.fitsInALetter = function (item) {
 								return item.quantity <= $scope.thresholdForLetters;
 							};
+
+
+							$scope.generateBoxes = function(){
+								var list = [];
+								angular.forEach($scope.addresses, function(address, idx){
+									if(newspaperService.fitsInABox(address, $scope.thresholdForBoxes, $scope.thresholdForLetters)){
+										list.push(address);
+									}
+								});
+								console.log(list.length);
+								console.log(list);
+
+								var promise = $http.post('http://localhost:5000/pdf', list)
+						    promise.success(function(data, status, headers, config) {
+						      $scope.boxesPDFFilename = data;
+									console.log("File name generated : " + data);
+								}).error(function(data, status, headers, config) {
+									console.log("ooops");
+						    });
+							}
 					}
 
-       ]).filter('fitsInABox', function() {
+       ]).filter('fitsInABox', ['newspaperService'], function(newspaperService) {
 				return function(item) {
-					return Math.round(item.quantity) <= $scope.thresholdForBoxes && Math.round(item.quantity) > $scope.thresholdForLetters;
+					return newspaperService.fitsInABox(item, $scope.thresholdForBoxes, $scope.thresholdForLetters);
 				}
-			}).filter('fitsInALetter', function() {
+			}).filter('fitsInALetter', ['newspaperService'], function(newspaperService) {
 				return function(item) {
-					return Math.round(item.quantity) <= $scope.thresholdForLetters;
+					return newspaperService.fitsInALetter(item, $scope.thresholdForLetters);
 				}
-			}).filter('fitsInAMono', function() {
+			}).filter('fitsInAMono', ['newspaperService'], function(newspaperService) {
 				return function(item) {
-					return Math.round(item.quantity) > $scope.thresholdForBoxes;
+					return newspapaerService.fitsInAMono(item, $scope.thresholdForBoxes);
 				}
 			});
 });

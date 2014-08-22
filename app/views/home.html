@@ -10,7 +10,8 @@
 
             <div ng-show="addresses.length > 0">
               <h5>{{addresses.length}} addresses found</h5>
-              <table class="table">
+
+              <!--table class="table">
                 <thead>
                   <th>Dest.</th>
                   <th>Compagnie</th>
@@ -33,7 +34,7 @@
                     <td>{{address.quantity}}</td>
                   </tr>
                 </tbody>
-              </table>
+              </table-->
           </div>
       </form>
   </div>
@@ -63,6 +64,10 @@
   <div class="col-md-12">
       <h2>Etape 3 - Verifier les adresses</h2>
       <h4>For boxes</h4>
+      <button class="btn btn-small btn-primary" ng-click="generateBoxes()" >Generer le PDF</button>
+      <div ng-show="boxesPDFFilename != null">Done :
+        <a href="http://localhost:5000/pdf/{{boxesPDFFilename}}">Show</a>
+      </div>
       <table class="table">
         <thead>
           <th>Dest.</th>

@@ -1,7 +1,9 @@
 var express = require('express');
 var fs = require('fs');
 var busboy = require('connect-busboy');
+var bodyParser = require('body-parser');
 var excel = require('./excel');
+var pdf = require('./pdf-gen');
 
 
 var app = express();
@@ -13,6 +15,7 @@ app.all('/*', function(req, res, next) {
 });
 
 app.use(busboy());
+app.use(bodyParser.json());
 
 app.post('/upload', function(req, res) {
     var fstream;
@@ -30,6 +33,31 @@ app.post('/upload', function(req, res) {
     });
 });
 
+var _PDF_DIR_ = "./pdf/";
+var _PDF_EXT_ = ".pdf";
+
+app.post('/pdf', function(req, res) {
+  var addresses = req.body;
+
+  var filename = Date.now().toString();
+  console.log("Generate " + addresses.length + " addresses into " + filename);
+
+
+  pdf.init(_PDF_DIR_ + filename + _PDF_EXT_);
+  for(var i = 0; i < addresses.length; i++){
+    pdf.generateSticker(addresses[i]);
+  }
+  pdf.close();
+
+  res.send(filename);
+});
+
+app.get('/pdf/:filename', function(req, res) {
+  fs.readFile(_PDF_DIR_ + req.params.filename + _PDF_EXT_, function (err,data){
+     res.contentType("application/pdf");
+     res.send(data);
+  });
+})
 
 
 

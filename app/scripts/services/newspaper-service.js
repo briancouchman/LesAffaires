@@ -3,6 +3,17 @@ define(['angular', 'app'], function(angular, app) {
   return app.service('newspaperService', function($http, $q){
     console.log("Starting newspaperService");
 
+    this.fitsInABox = function(item, thresholdForBoxes, thresholdForLetters){
+      return Math.round(item.quantity) <= thresholdForBoxes && Math.round(item.quantity) > thresholdForLetters;
+    };
+    this.fitsInALetter = function(item, thresholdForLetters){
+      return Math.round(item.quantity) <= thresholdForLetters;
+    };
+    this.fitsInAMono = function(item, thresholdForBoxes){
+      return Math.round(item.quantity) > thresholdForBoxes;
+    };
+
+
     /**
      * Secret sauce formula to calculate the weight of on item of the newspaper 'Les Affaires'
      * @param pages the number of pages of the newspaper
