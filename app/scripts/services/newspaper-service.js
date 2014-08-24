@@ -26,6 +26,8 @@ define(['angular', 'app'], function(angular, app) {
     /**
      * Return the max number of newspapers that can be fitted in a box.
      *  A box can be 23 Kg max and generally the items are packaged by groups of ten
+     * A box can be also max 4000
+     The first of both to be reached (23kg or 4000 pages)
      * @param itemWeight the weight in kg of a single newspaper
      * @return the max number of newspaper (multiple of ten) that can be fit in a box (max 23 Kg.)
      */

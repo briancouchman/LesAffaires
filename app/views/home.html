@@ -1,11 +1,19 @@
 <div class="row">
   <div class="col-md-12">
       <h2>Etape 1 - Choisir le fichier source</h2>
+      <label for="inputExcel">Choisr le fichier Excel source</label>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-4">
       <form role="form">
           <div class="form-group">
-            <label for="inputExcel">Choisr le fichier Excel source</label>
             <input type="file" name="excelSource" ng-file-select="onFileSelect($files)" multiple class="form-control">
-            <button type="button" class="btn btn-sm btn-primary" ng-click="upload($files)">Upload</button>
+          </div>
+      </form>
+  </div>
+  <div class="col-md-4">
+    <button type="button" class="btn btn-sm btn-primary" ng-click="upload($files)">Upload</button>
             <br/>
 
             <div ng-show="addresses.length > 0">
@@ -36,7 +44,6 @@
                 </tbody>
               </table-->
           </div>
-      </form>
   </div>
 </div>
 
@@ -44,6 +51,10 @@
 <div class="row" ng-show="addresses.length > 0">
   <div class="col-md-12">
       <h2>Etape 2 - Definir le nombre de pages</h2>
+  </div>
+</div>
+<div class="row" ng-show="addresses.length > 0">
+  <div class="col-md-4">
       <form role="form">
           <div class="form-group">
             <label for="pages">Entrer le nombre de pages du journal</label>
@@ -94,6 +105,10 @@
       </table>
 
       <h4>For letters</h4>
+      <button class="btn btn-small btn-primary" ng-click="generateLetters()" >Generer le PDF</button>
+      <div ng-show="lettersPDFFilename != null">Done :
+        <a href="http://localhost:5000/pdf/{{lettersPDFFilename}}">Show</a>
+      </div>
       <table class="table">
         <thead>
           <th>Dest.</th>

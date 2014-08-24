@@ -46,6 +46,7 @@ require( [
 	'controllers/home-controller',
 
 	'services/newspaper-service',
+	'services/server-service',
 
 	'routes'
 ], function(angular, app, routes) {

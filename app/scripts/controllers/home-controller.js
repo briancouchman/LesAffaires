@@ -1,7 +1,7 @@
 define(['app'], function (app) {
 	'use strict';
-	return app.controller('HomeCtrl', ['$scope','$upload', '$http', 'newspaperService',
-            function($scope, $upload, $http, newspaperService){
+	return app.controller('HomeCtrl', ['$scope','$upload', '$http', '$location', 'newspaperService', 'serverService',
+            function($scope, $upload, $http, $location, newspaperService, serverService){
                 console.log("Starting Home Controller");
 
                 var filesToUpload;
@@ -76,16 +76,22 @@ define(['app'], function (app) {
 										list.push(address);
 									}
 								});
-								console.log(list.length);
-								console.log(list);
+								serverService.generatePDF(list, function(filename){ $scope.boxesPDFFilename = filename});
+							}
 
-								var promise = $http.post('http://localhost:5000/pdf', list)
-						    promise.success(function(data, status, headers, config) {
-						      $scope.boxesPDFFilename = data;
-									console.log("File name generated : " + data);
-								}).error(function(data, status, headers, config) {
-									console.log("ooops");
-						    });
+							$scope.generateLetters = function(){
+								var list = [];
+								angular.forEach($scope.addresses, function(address, idx){
+									if(newspaperService.fitsInALetter(address, $scope.thresholdForLetters)){
+										list.push(address);
+									}
+								});
+								serverService.generatePDF(list, function(filename){ $scope.lettersPDFFilename = filename});
+							}
+
+							$scope.showPDF = function(filename){
+								console.log(filename);
+								$location.path = "http://localhost:5000/pdf/" + filename;
 							}
 					}
 
