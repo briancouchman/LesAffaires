@@ -8,7 +8,7 @@ var excelParser = require('excel-parser');
 
 
 module.exports = {
-  parseExcel: function (filename, callback){
+  parseExcel: function (filename, callback, errorCallback){
       console.log("Parsing " + filename);
       excelParser.parse({
         inFile: filename,
@@ -16,6 +16,7 @@ module.exports = {
       },function(err, records){
         if(err) {
           console.error("Parsing with error: " + err);
+          errorCallback.call(this, err);
         }else{
           console.log("Parsing successful");
           //console.log(records);

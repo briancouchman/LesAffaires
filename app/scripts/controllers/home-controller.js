@@ -1,11 +1,12 @@
 define(['app'], function (app) {
 	'use strict';
-	return app.controller('HomeCtrl', ['$scope','$upload', '$http', '$location', 'newspaperService', 'serverService',
-            function($scope, $upload, $http, $location, newspaperService, serverService){
+	return app.controller('HomeCtrl', ['$scope','$upload', '$http', 'newspaperService', 'serverService',
+            function($scope, $upload, $http, newspaperService, serverService){
                 console.log("Starting Home Controller");
 
                 var filesToUpload;
 								$scope.addresses = [];
+								$scope.uploadError = null;
                 $scope.onFileSelect = function($files) {
                     filesToUpload = $files;
                     for (var i = 0; i < $files.length; i++) {
@@ -14,7 +15,8 @@ define(['app'], function (app) {
                     }
                 }
 
-                $scope.upload = function(){
+                $scope.uploadFile = function(){
+										console.debug("upload");
                     //$files: an array of files selected, each file has name, size, and type.
                    var $files = filesToUpload;
                    for (var i = 0; i < $files.length; i++) {
@@ -37,10 +39,15 @@ define(['app'], function (app) {
                         // file is uploaded successfully
                         console.log(data);
 												$scope.addresses = data.addresses;
-                      });
-                      //.error(...)
-                      //.then(success, error, progress);
-                      //.xhr(function(xhr){xhr.upload.addEventListener(...)})// access and attach any event listener to XMLHttpRequest.
+												$scope.uploadError = null;
+
+												if($scope.addresses.length == 0){
+													$scope.uploadError = "Le ficher selectionne ne contient aucune addresse. Verifiez les fichier et reessayez.";
+												}
+                      }).error(function(data, status, headers, config) {
+												console.log(data);
+												$scope.uploadError = "Le fichier séléctionné est invalide. Seuls les fichiers Excel sont acceptés";
+											});
                     }
                     /* alternative way of uploading, send the file binary with the file's content-type.
                        Could be used to upload files to CouchDB, imgur, etc... html5 FileReader is needed.
@@ -56,8 +63,8 @@ define(['app'], function (app) {
 							$scope.thresholdForLetters = -1;
 
 							$scope.calculateThresholds = function(){
-								var itemWeight = newspaperService.getNewspaperWeight($scope.numberOfPages);
-								$scope.thresholdForBoxes = 	newspaperService.getThresholdForBoxes(itemWeight);
+								//var itemWeight = newspaperService.getNewspaperWeight($scope.numberOfPages);
+								$scope.thresholdForBoxes = 	newspaperService.getThresholdForBoxes($scope.numberOfPages);
 								$scope.thresholdForLetters = newspaperService.getThresholdForLetters();
 							}
 
@@ -87,11 +94,6 @@ define(['app'], function (app) {
 									}
 								});
 								serverService.generatePDF(list, function(filename){ $scope.lettersPDFFilename = filename});
-							}
-
-							$scope.showPDF = function(filename){
-								console.log(filename);
-								$location.path = "http://localhost:5000/pdf/" + filename;
 							}
 					}
 

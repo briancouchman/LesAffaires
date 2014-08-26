@@ -1,0 +1,16 @@
+{
+  "name": "LesAffaires",
+  "description": "",
+  "version": "0.1.0",
+  "author": "Brian Couchman",
+  "dependencies": {},
+  "devDependencies": {
+    "chai": "*",
+    "connect-busboy": "*",
+    "excel-parser": "*",
+    "express": "*",
+    "fs": "*",
+    "karma": "^0.12.21",
+    "mocha": "*"
+  }
+}

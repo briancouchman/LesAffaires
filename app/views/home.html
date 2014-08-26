@@ -13,12 +13,17 @@
       </form>
   </div>
   <div class="col-md-4">
-    <button type="button" class="btn btn-sm btn-primary" ng-click="upload($files)">Upload</button>
-            <br/>
-
-            <div ng-show="addresses.length > 0">
-              <h5>{{addresses.length}} addresses found</h5>
-
+    <button type="button" class="btn btn-sm btn-primary" ng-click="uploadFile($files)">Upload</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div ng-show="addresses.length > 0">
+      <h5>{{addresses.length}} addresses found</h5>
+    </div>
+    <div ng-show="uploadError != null">
+      <h5 class="text-danger">Aucune adresse trouv&eacute;e: {{uploadError}}</h5>
+    </div>
               <!--table class="table">
                 <thead>
                   <th>Dest.</th>
@@ -43,7 +48,6 @@
                   </tr>
                 </tbody>
               </table-->
-          </div>
   </div>
 </div>
 
@@ -53,33 +57,38 @@
       <h2>Etape 2 - Definir le nombre de pages</h2>
   </div>
 </div>
-<div class="row" ng-show="addresses.length > 0">
-  <div class="col-md-4">
-      <form role="form">
-          <div class="form-group">
-            <label for="pages">Entrer le nombre de pages du journal</label>
-            <input type="text" name="pages" ng-model="numberOfPages" class="form-control" ng-change="calculateThresholds()">
-            <br/>
 
-            <div ng-show="thresholdForBoxes > -1 && thresholdForLetters > -1">
-                <h5>Threshold for boxes : {{thresholdForBoxes}}</h5>
-                <h5>Threshold for letters : {{thresholdForLetters}}</h5>
-            </div>
-          </div>
-      </form>
+<form role="form" ng-show="addresses.length > 0">
+  <div class="row">
+    <div class="col-md-4">
+      <label for="pages">Entrer le nombre de pages du journal</label>
+    </div>
   </div>
-</div>
+  <div class="row">
+    <div class="col-md-1">
+      <div class="form-group">
+        <input type="text" name="pages" ng-model="numberOfPages" class="form-control" ng-change="calculateThresholds()">
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div ng-show="thresholdForBoxes > -1 && thresholdForLetters > -1">
+          <p><strong>Threshold for boxes</strong> : {{thresholdForBoxes}}</p>
+          <p><strong>Threshold for letters</strong> : {{thresholdForLetters}}</p>
+      </div>
+    </div>
+  </div>
+</form>
 
 
 <div class="row" ng-show="thresholdForBoxes > -1">
   <div class="col-md-12">
       <h2>Etape 3 - Verifier les adresses</h2>
-      <h4>For boxes</h4>
+      <h4>A envoyer par boites</h4>
       <button class="btn btn-small btn-primary" ng-click="generateBoxes()" >Generer le PDF</button>
       <div ng-show="boxesPDFFilename != null">Done :
         <a href="http://localhost:5000/pdf/{{boxesPDFFilename}}">Show</a>
       </div>
-      <table class="table">
+      <table class="table table-condensed">
         <thead>
           <th>Dest.</th>
           <th>Compagnie</th>
@@ -98,18 +107,18 @@
             <td>{{address.add_comp}}</td>
             <td>{{address.city}}</td>
             <td>{{address.province}}</td>
-            <td>{{address.zipcode}}</td>
+            <td  style="white-space: nowrap">{{address.zipcode}}</td>
             <td>{{address.quantity}}</td>
           </tr>
         </tbody>
       </table>
 
-      <h4>For letters</h4>
+      <h4>A envoyer par lettre</h4>
       <button class="btn btn-small btn-primary" ng-click="generateLetters()" >Generer le PDF</button>
       <div ng-show="lettersPDFFilename != null">Done :
         <a href="http://localhost:5000/pdf/{{lettersPDFFilename}}">Show</a>
       </div>
-      <table class="table">
+      <table class="table table-condensed">
         <thead>
           <th>Dest.</th>
           <th>Compagnie</th>
@@ -135,7 +144,7 @@
       </table>
 
 
-      <h4>For Monos</h4>
+      <!--h4>For Monos</h4>
       <table class="table">
         <thead>
           <th>Dest.</th>
@@ -159,6 +168,6 @@
             <td>{{address.quantity}}</td>
           </tr>
         </tbody>
-      </table>
+      </table-->
   </div>
 </div>

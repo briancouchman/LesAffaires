@@ -3,7 +3,7 @@ var fs = require('fs');
 var busboy = require('connect-busboy');
 var bodyParser = require('body-parser');
 var excel = require('./excel');
-var pdf = require('./pdf-gen');
+var pdf = require('./pdfSticker');
 
 
 var app = express();
@@ -26,8 +26,12 @@ app.post('/upload', function(req, res) {
         file.pipe(fstream);
         fstream.on('close', function () {
             console.log("Closing stream");
-            excel.parseExcel(__dirname + '/files/' + filename, function(addresses){
+            excel.parseExcel(__dirname + '/files/' + filename,
+            function(addresses){
               res.send({uploaded: true, fileName: filename, addresses: addresses});
+            },
+            function(err){
+              res.status(400).send({uploaded: false, error: err});
             })
         });
     });

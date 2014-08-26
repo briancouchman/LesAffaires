@@ -25,13 +25,22 @@ define(['angular', 'app'], function(angular, app) {
 
     /**
      * Return the max number of newspapers that can be fitted in a box.
-     *  A box can be 23 Kg max and generally the items are packaged by groups of ten
-     * A box can be also max 4000
-     The first of both to be reached (23kg or 4000 pages)
-     * @param itemWeight the weight in kg of a single newspaper
-     * @return the max number of newspaper (multiple of ten) that can be fit in a box (max 23 Kg.)
+     * A box can contain mximum 4000
+     * @param numberOfPages the number of pages for a newspapaer
+     * @return the max number of newspaper that can be fit in a box (max 4000 pages)
      */
-    this.getThresholdForBoxes = function(itemWeight){
+    this.getThresholdForBoxes = function(numberOfPages){
+      if(numberOfPages == 0) return 0;
+      return Math.floor(4000 / numberOfPages);
+    };
+
+   /**
+    * Return the max number of newspapers that can be fitted in a pile.
+    * A pile can be 23 Kg max and generally the items are packaged by groups of ten
+    * @param itemWeight the weight in kg of a single newspaper
+    * @return the max number of newspaper (multiple of ten) that can be fit in a pile (max 23 Kg.)
+    */
+    this.getThresholdForPiles = function(itemWeight){
       var maxNet = 23/itemWeight;
       return Math.round(maxNet - (23 % itemWeight));
     };
