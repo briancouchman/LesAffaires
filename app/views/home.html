@@ -72,8 +72,8 @@
     </div>
     <div class="col-md-4">
       <div ng-show="thresholdForBoxes > -1 && thresholdForLetters > -1">
-          <p><strong>Threshold for boxes</strong> : {{thresholdForBoxes}}</p>
-          <p><strong>Threshold for letters</strong> : {{thresholdForLetters}}</p>
+          <p><strong>Maximum pour les boites</strong> : {{thresholdForBoxes}}</p>
+          <p><strong>Maximum pour les lettres</strong> : {{thresholdForLetters}}</p>
       </div>
     </div>
   </div>
@@ -84,10 +84,9 @@
   <div class="col-md-12">
       <h2>Etape 3 - Verifier les adresses</h2>
       <h4>A envoyer par boites</h4>
-      <button class="btn btn-small btn-primary" ng-click="generateBoxes()" >Generer le PDF</button>
-      <div ng-show="boxesPDFFilename != null">Done :
-        <a href="http://localhost:5000/pdf/{{boxesPDFFilename}}">Show</a>
-      </div>
+      <button class="btn btn-small btn-primary" ng-show="boxesPDFFilename == null"ng-click="generateBoxes()" >Generer le PDF</button>
+      <a class="btn btn-small btn-primary" ng-show="boxesPDFFilename != null" href="http://localhost:5000/pdf/{{boxesPDFFilename}}">Voir le PDF</a>
+
       <table class="table table-condensed">
         <thead>
           <th>Dest.</th>
@@ -100,24 +99,23 @@
           <th>Quantity</th>
         </thead>
         <tbody>
-          <tr ng-repeat="address in addresses | filter:fitsInABox">
+          <tr ng-repeat="address in addressesInABox = (addresses | filter:fitsInABox)">
             <td>{{address.dest}}</td>
             <td>{{address.company}}</td>
             <td>{{address.address}}</td>
             <td>{{address.add_comp}}</td>
             <td>{{address.city}}</td>
             <td>{{address.province}}</td>
-            <td  style="white-space: nowrap">{{address.zipcode}}</td>
-            <td>{{address.quantity}}</td>
+            <td style="white-space: nowrap">{{address.zipcode}}</td>
+            <td class="btn-primary">{{address.quantity}}</td>
           </tr>
         </tbody>
       </table>
 
       <h4>A envoyer par lettre</h4>
-      <button class="btn btn-small btn-primary" ng-click="generateLetters()" >Generer le PDF</button>
-      <div ng-show="lettersPDFFilename != null">Done :
-        <a href="http://localhost:5000/pdf/{{lettersPDFFilename}}">Show</a>
-      </div>
+      <button class="btn btn-small btn-primary" ng-show="lettersPDFFilename == null" ng-click="generateLetters()" >Generer le PDF</button>
+      <a class="btn btn-small btn-primary" ng-show="lettersPDFFilename != null" href="http://localhost:5000/pdf/{{lettersPDFFilename}}">Voir le PDF</a>
+
       <table class="table table-condensed">
         <thead>
           <th>Dest.</th>
@@ -130,15 +128,15 @@
           <th>Quantity</th>
         </thead>
         <tbody>
-          <tr ng-repeat="address in addresses | filter:fitsInALetter">
+          <tr ng-repeat="address in addressesInALetter = (addresses | filter:fitsInALetter)">
             <td>{{address.dest}}</td>
             <td>{{address.company}}</td>
             <td>{{address.address}}</td>
             <td>{{address.add_comp}}</td>
             <td>{{address.city}}</td>
             <td>{{address.province}}</td>
-            <td>{{address.zipcode}}</td>
-            <td>{{address.quantity}}</td>
+            <td style="white-space: nowrap">{{address.zipcode}}</td>
+            <td class="btn-primary">{{address.quantity}}</td>
           </tr>
         </tbody>
       </table>

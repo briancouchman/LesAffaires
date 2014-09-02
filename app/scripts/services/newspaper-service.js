@@ -54,5 +54,7 @@ define(['angular', 'app'], function(angular, app) {
     this.getThresholdForLetters = function(){
       return 10;
     };
+
+
   });
 });

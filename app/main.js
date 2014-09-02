@@ -47,6 +47,7 @@ require( [
 
 	'services/newspaper-service',
 	'services/server-service',
+	'services/address-service',
 
 	'routes'
 ], function(angular, app, routes) {

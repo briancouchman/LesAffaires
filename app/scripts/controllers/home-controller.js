@@ -1,7 +1,7 @@
 define(['app'], function (app) {
 	'use strict';
-	return app.controller('HomeCtrl', ['$scope','$upload', '$http', 'newspaperService', 'serverService',
-            function($scope, $upload, $http, newspaperService, serverService){
+	return app.controller('HomeCtrl', ['$scope','$upload', '$http', 'newspaperService', 'serverService', 'addressService',
+            function($scope, $upload, $http, newspaperService, serverService, addressService){
                 console.log("Starting Home Controller");
 
                 var filesToUpload;
@@ -33,14 +33,13 @@ define(['app'], function (app) {
                         //fileFormDataName: myFile, //or a list of names for multiple files (html5).
                         /* customize how data is added to formData. See #40#issuecomment-28612000 for sample code */
                         //formDataAppender: function(formData, key, val){}
-                      }).progress(function(evt) {
-                        console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
                       }).success(function(data, status, headers, config) {
                         // file is uploaded successfully
                         console.log(data);
 												$scope.addresses = data.addresses;
-												$scope.uploadError = null;
+												addressService.cleanIncompleteAddresses($scope.addresses);
 
+												$scope.uploadError = null;
 												if($scope.addresses.length == 0){
 													$scope.uploadError = "Le ficher selectionne ne contient aucune addresse. Verifiez les fichier et reessayez.";
 												}
@@ -77,23 +76,23 @@ define(['app'], function (app) {
 
 
 							$scope.generateBoxes = function(){
-								var list = [];
+							/*	var list = [];
 								angular.forEach($scope.addresses, function(address, idx){
 									if(newspaperService.fitsInABox(address, $scope.thresholdForBoxes, $scope.thresholdForLetters)){
 										list.push(address);
 									}
-								});
-								serverService.generatePDF(list, function(filename){ $scope.boxesPDFFilename = filename});
+								});*/
+								serverService.generatePDF($scope.addressesInABox, function(filename){ $scope.boxesPDFFilename = filename});
 							}
 
 							$scope.generateLetters = function(){
-								var list = [];
+								/*var list = [];
 								angular.forEach($scope.addresses, function(address, idx){
 									if(newspaperService.fitsInALetter(address, $scope.thresholdForLetters)){
 										list.push(address);
 									}
-								});
-								serverService.generatePDF(list, function(filename){ $scope.lettersPDFFilename = filename});
+								});*/
+								serverService.generatePDF($scope.addressesInALetter, function(filename){ $scope.lettersPDFFilename = filename});
 							}
 					}
 
