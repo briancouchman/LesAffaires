@@ -54,50 +54,59 @@ define(['app'], function (app) {
                     // $scope.upload = $upload.http({...})  see 88#issuecomment-31366487 for sample code.
                   };
 
-									$scope.calculateShippings = function(){
-										$scope.shippings = [];
 
-										$scope.totals = {
-											quantity: 0,
-											box15: 0,
-											box17: 0,
-											envT7: 0,
-											envT6: 0
-										}
 
-										angular.forEach($scope.addresses, function(address, idx){
-											serverService.calculateShipping(address, $scope.numberOfPages, function(shipping){
-												console.log("shipping " + shipping);
-												$scope.shippings.push(shipping);
 
-												//update totals
-												$scope.totals.quantity += parseInt(address.quantity);
-												$scope.totals.box15 += shipping.box15;
-												$scope.totals.box17 += shipping.box17;
-												$scope.totals.envT7 += shipping.envT7;
-												$scope.totals.envT6 += shipping.envT6;
+							$scope.numberOfPages = 0;
+							$scope.thresholdForBoxes = -1;
+							$scope.thresholdForLetters = -1;
 
-											});
-										})
+							$scope.calculateThresholds = function(){
+								//var itemWeight = newspaperService.getNewspaperWeight($scope.numberOfPages);
+								$scope.thresholdForBoxes = 	newspaperService.getThresholdForBoxes($scope.numberOfPages);
+								$scope.thresholdForLetters = newspaperService.getThresholdForLetters();
+							}
 
+							$scope.fitsInABox = function (item) {
+						    return item.quantity <= $scope.thresholdForBoxes && item.quantity > $scope.thresholdForLetters;
+						  };
+							$scope.fitsInALetter = function (item) {
+								return item.quantity <= $scope.thresholdForLetters;
+							};
+
+
+							$scope.generateBoxes = function(){
+							/*	var list = [];
+								angular.forEach($scope.addresses, function(address, idx){
+									if(newspaperService.fitsInABox(address, $scope.thresholdForBoxes, $scope.thresholdForLetters)){
+										list.push(address);
 									}
+								});*/
+								serverService.generatePDF($scope.addressesInABox, function(filename){ $scope.boxesPDFFilename = filename});
+							}
 
-
-
-									$scope.generateLabels = function(){
-										serverService.generateLabels($scope.shippings, function(filename){
-											$scope.labelsFilename = filename
-										})
+							$scope.generateLetters = function(){
+								/*var list = [];
+								angular.forEach($scope.addresses, function(address, idx){
+									if(newspaperService.fitsInALetter(address, $scope.thresholdForLetters)){
+										list.push(address);
 									}
+								});*/
+								serverService.generatePDF($scope.addressesInALetter, function(filename){ $scope.lettersPDFFilename = filename});
+							}
+					}
 
-									$scope.generateInvoice = function(){
-										serverService.generateInvoice($scope.shippings, function(filename){
-											$scope.invoiceFilename = filename
-										})
-									}
-
-
-							$scope.numberOfPages = 40;
-						}
-       ]);
+       ]).filter('fitsInABox', ['newspaperService'], function(newspaperService) {
+				return function(item) {
+					return newspaperService.fitsInABox(item, $scope.thresholdForBoxes, $scope.thresholdForLetters);
+				}
+			}).filter('fitsInALetter', ['newspaperService'], function(newspaperService) {
+				return function(item) {
+					return newspaperService.fitsInALetter(item, $scope.thresholdForLetters);
+				}
+			}).filter('fitsInAMono', ['newspaperService'], function(newspaperService) {
+				return function(item) {
+					return newspapaerService.fitsInAMono(item, $scope.thresholdForBoxes);
+				}
+			});
 });

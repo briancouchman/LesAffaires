@@ -3,7 +3,9 @@
   "description": "",
   "version": "0.1.0",
   "author": "Brian Couchman",
-  "dependencies": {},
+  "dependencies": {
+    "properties": "^1.2.1"
+  },
   "devDependencies": {
     "chai": "*",
     "connect-busboy": "*",

@@ -2,8 +2,15 @@ var express = require('express');
 var fs = require('fs');
 var busboy = require('connect-busboy');
 var bodyParser = require('body-parser');
-var excel = require('./excel');
-var pdf = require('./pdfSticker');
+
+var excelService = require('./excel-service');
+var pdfService = require('./pdf-service');
+var shippingService = require('./shipping-service');
+
+
+var properties = require('properties');
+var props = {};
+
 
 
 var app = express();
@@ -17,6 +24,12 @@ app.all('/*', function(req, res, next) {
 app.use(busboy());
 app.use(bodyParser.json());
 
+
+/**
+ * Upload the Excel file to the server
+ * @param the request with the excel file as a payload
+ * @returns sends the addesses back as a list of address objects
+ */
 app.post('/upload', function(req, res) {
     var fstream;
     req.pipe(req.busboy);
@@ -26,7 +39,7 @@ app.post('/upload', function(req, res) {
         file.pipe(fstream);
         fstream.on('close', function () {
             console.log("Closing stream");
-            excel.parseExcel(__dirname + '/files/' + filename,
+            excelService.parseExcel(__dirname + '/files/' + filename,
             function(addresses){
               res.send({uploaded: true, fileName: filename, addresses: addresses});
             },
@@ -37,33 +50,59 @@ app.post('/upload', function(req, res) {
     });
 });
 
-var _PDF_DIR_ = "./pdf/";
-var _PDF_EXT_ = ".pdf";
 
-app.post('/pdf', function(req, res) {
-  var addresses = req.body;
+
+
+/**
+ * Generate the stickers for the given shipping
+ * var _PDF_DIR_ = "./pdf/";
+ * var _PDF_EXT_ = ".pdf";
+ */
+app.post('/labels', function(req, res) {
+  var shippings = req.body;
 
   var filename = Date.now().toString();
-  console.log("Generate " + addresses.length + " addresses into " + filename);
+  console.log("Generate " + shippings.length + " shippings into " + filename);
 
 
-  pdf.init(_PDF_DIR_ + filename + _PDF_EXT_);
-  for(var i = 0; i < addresses.length; i++){
-    pdf.generateSticker(addresses[i]);
+  pdfService.init(props.pdf.dir + filename + props.pdf.ext);
+  for(var i = 0; i < shippings.length; i++){
+    pdfService.generateShipping(shippings[i]);
   }
-  pdf.close();
+  pdfService.close();
 
   res.send(filename);
 });
 
-app.get('/pdf/:filename', function(req, res) {
-  fs.readFile(_PDF_DIR_ + req.params.filename + _PDF_EXT_, function (err,data){
+/**
+ * Get the content of the PDF with the given filename
+ */
+app.get('/labels/:filename', function(req, res) {
+  fs.readFile(props.pdf.dir+ req.params.filename + props.pdf.ext, function (err,data){
      res.contentType("application/pdf");
      res.send(data);
   });
 })
 
 
+/**
+ * Generate and return a shipping, based on the address and the quantity
+ */
+app.post('/shipping/:pages', function(req,res){
+  var address = req.body;
 
-console.log("Server running on port 5000");
-app.listen(5000);
+  var shipping = shippingService.getShipping(address, req.params.pages)
+
+  res.send(shipping);
+})
+
+properties.parse('./config.properties', {path: true, sections: true}, function(error, obj){
+  props = obj;
+  console.log("Properties initialized");
+  console.log(props);
+
+  shippingService.init(props);
+
+  console.log("Server running on port 5000");
+  app.listen(5000);
+});

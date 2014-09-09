@@ -24,30 +24,6 @@
     <div ng-show="uploadError != null">
       <h5 class="text-danger">Aucune adresse trouv&eacute;e: {{uploadError}}</h5>
     </div>
-              <!--table class="table">
-                <thead>
-                  <th>Dest.</th>
-                  <th>Compagnie</th>
-                  <th>Address</th>
-                  <th>Add. comp.</th>
-                  <th>City</th>
-                  <th>Province</th>
-                  <th>Zip code</th>
-                  <th>Quantity</th>
-                </thead>
-                <tbody>
-                  <tr ng-repeat="address in addresses">
-                    <td>{{address.dest}}</td>
-                    <td>{{address.company}}</td>
-                    <td>{{address.address}}</td>
-                    <td>{{address.add_comp}}</td>
-                    <td>{{address.city}}</td>
-                    <td>{{address.province}}</td>
-                    <td>{{address.zipcode}}</td>
-                    <td>{{address.quantity}}</td>
-                  </tr>
-                </tbody>
-              </table-->
   </div>
 </div>
 
@@ -67,105 +43,67 @@
   <div class="row">
     <div class="col-md-1">
       <div class="form-group">
-        <input type="text" name="pages" ng-model="numberOfPages" class="form-control" ng-change="calculateThresholds()">
+        <input type="text" name="pages" ng-model="numberOfPages" class="form-control">
       </div>
     </div>
-    <div class="col-md-4">
-      <div ng-show="thresholdForBoxes > -1 && thresholdForLetters > -1">
-          <p><strong>Maximum pour les boites</strong> : {{thresholdForBoxes}}</p>
-          <p><strong>Maximum pour les lettres</strong> : {{thresholdForLetters}}</p>
-      </div>
+    <div class="col-md-2">
+      <button class="btn btn-primary btn-sm" ng-click="calculateShippings()">Calculer</button>
     </div>
   </div>
 </form>
 
 
-<div class="row" ng-show="thresholdForBoxes > -1">
+<div class="row" ng-show="shippings.length > 0">
   <div class="col-md-12">
       <h2>Etape 3 - Verifier les adresses</h2>
-      <h4>A envoyer par boites</h4>
-      <button class="btn btn-small btn-primary" ng-show="boxesPDFFilename == null"ng-click="generateBoxes()" >Generer le PDF</button>
-      <a class="btn btn-small btn-primary" ng-show="boxesPDFFilename != null" href="http://localhost:5000/pdf/{{boxesPDFFilename}}">Voir le PDF</a>
+      <button class="btn btn-small btn-primary"  ng-click="generateLabels()" >Generer les etiquettes</button>
+      <a class="btn btn-small btn-primary" ng-show="labelsFilename != null" href="http://localhost:5000/labels/{{labelsFilename}}">Imprimer les etiquettes</a>
+
+      &nbsp;
+
+      <button class="btn btn-small btn-primary" ng-show="invoiceFilename == null"ng-click="generateInvoice()" >Generer la facture</button>
+      <a class="btn btn-small btn-primary" ng-show="invoiceFilename != null" href="http://localhost:5000/invoice/{{invoiceFilename}}">Imprimer la facture</a>
+
 
       <table class="table table-condensed">
         <thead>
           <th>Dest.</th>
-          <th>Compagnie</th>
           <th>Address</th>
-          <th>Add. comp.</th>
-          <th>City</th>
-          <th>Province</th>
-          <th>Zip code</th>
           <th>Quantity</th>
+          <th>Boites 15"</th>
+          <th>Boites 17"</th>
+          <th>Env. T7</th>
+          <th>Env. T7</th>
+          <th>Total</th>
         </thead>
         <tbody>
-          <tr ng-repeat="address in addressesInABox = (addresses | filter:fitsInABox)">
-            <td>{{address.dest}}</td>
-            <td>{{address.company}}</td>
-            <td>{{address.address}}</td>
-            <td>{{address.add_comp}}</td>
-            <td>{{address.city}}</td>
-            <td>{{address.province}}</td>
-            <td style="white-space: nowrap">{{address.zipcode}}</td>
-            <td class="btn-primary">{{address.quantity}}</td>
+          <tr class="info">
+            <td><strong>{{addresses.length}}<strong></td>
+            <td></td>
+            <td>{{totals.quantity}}</td>
+            <td>{{totals.box15}}</td>
+            <td>{{totals.box17}}</td>
+            <td>{{totals.envT7}}</td>
+            <td>{{totals.envT6}}</td>
+            <td>{{totals.box15 + totals.box17 + totals.envT7 + totals.envT6}}</td>
+          </tr>
+          <tr ng-repeat="shipping in shippings">
+            <td>{{shipping.address.dest}}</td>
+            <td>
+              <address>
+                <strong>{{shipping.address.company}}</strong><br/>
+                {{shipping.address.address}}, {{shipping.address.add_comp}}<br/>
+                {{shipping.address.city}}, {{shipping.address.province}} {{shipping.address.zipcode}}
+              </address>
+            </td>
+            <td>{{shipping.address.quantity}}</td>
+            <td>{{shipping.box15}}</td>
+            <td>{{shipping.box17}}</td>
+            <td>{{shipping.envT7}}</td>
+            <td>{{shipping.envT6}}</td>
+            <td>{{shipping.box15 + shipping.box17 + shipping.envT7 + shipping.envT6}}</td>
           </tr>
         </tbody>
       </table>
-
-      <h4>A envoyer par lettre</h4>
-      <button class="btn btn-small btn-primary" ng-show="lettersPDFFilename == null" ng-click="generateLetters()" >Generer le PDF</button>
-      <a class="btn btn-small btn-primary" ng-show="lettersPDFFilename != null" href="http://localhost:5000/pdf/{{lettersPDFFilename}}">Voir le PDF</a>
-
-      <table class="table table-condensed">
-        <thead>
-          <th>Dest.</th>
-          <th>Compagnie</th>
-          <th>Address</th>
-          <th>Add. comp.</th>
-          <th>City</th>
-          <th>Province</th>
-          <th>Zip code</th>
-          <th>Quantity</th>
-        </thead>
-        <tbody>
-          <tr ng-repeat="address in addressesInALetter = (addresses | filter:fitsInALetter)">
-            <td>{{address.dest}}</td>
-            <td>{{address.company}}</td>
-            <td>{{address.address}}</td>
-            <td>{{address.add_comp}}</td>
-            <td>{{address.city}}</td>
-            <td>{{address.province}}</td>
-            <td style="white-space: nowrap">{{address.zipcode}}</td>
-            <td class="btn-primary">{{address.quantity}}</td>
-          </tr>
-        </tbody>
-      </table>
-
-
-      <!--h4>For Monos</h4>
-      <table class="table">
-        <thead>
-          <th>Dest.</th>
-          <th>Compagnie</th>
-          <th>Address</th>
-          <th>Add. comp.</th>
-          <th>City</th>
-          <th>Province</th>
-          <th>Zip code</th>
-          <th>Quantity</th>
-        </thead>
-        <tbody>
-          <tr ng-repeat="address in addresses | filter:fitsInAMono">
-            <td>{{address.dest}}</td>
-            <td>{{address.company}}</td>
-            <td>{{address.address}}</td>
-            <td>{{address.add_comp}}</td>
-            <td>{{address.city}}</td>
-            <td>{{address.province}}</td>
-            <td>{{address.zipcode}}</td>
-            <td>{{address.quantity}}</td>
-          </tr>
-        </tbody>
-      </table-->
   </div>
 </div>
