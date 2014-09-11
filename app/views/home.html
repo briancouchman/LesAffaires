@@ -97,11 +97,11 @@
               </address>
             </td>
             <td>{{shipping.address.quantity}}</td>
-            <td>{{shipping.box15}}</td>
-            <td>{{shipping.box17}}</td>
-            <td>{{shipping.envT7}}</td>
-            <td>{{shipping.envT6}}</td>
-            <td>{{shipping.box15 + shipping.box17 + shipping.envT7 + shipping.envT6}}</td>
+            <td><ul class="list-unstyled"><li ng-repeat="items in shipping.box15 track by $index">1x{{items}}</li></ul></td>
+            <td><ul class="list-unstyled"><li ng-repeat="items in shipping.box17 track by $index">1x{{items}}</li></ul></td>
+            <td><ul class="list-unstyled"><li ng-repeat="items in shipping.envT7 track by $index">1x{{items}}</li></ul></td>
+            <td><ul class="list-unstyled"><li ng-repeat="items in shipping.envT6 track by $index">1x{{items}}</li></ul></td>
+            <td>{{shipping.box15.length + shipping.box17.length + shipping.envT7.length + shipping.envT6.length}}</td>
           </tr>
         </tbody>
       </table>

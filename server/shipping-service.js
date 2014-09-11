@@ -10,63 +10,74 @@ module.exports = {
     console.log("Shipping service is initialized");
   },
 
+  calculateBox15: function(shipping){
+    while(this.pagesLeft > this.props.box15.min || this.pagesLeft > this.props.box17.max){
+      var _pages = this.pagesLeft >= this.props.box15.max ? this.props.box15.max : this.pagesLeft;
+      var leftOver = shipping.addBox15(_pages);
+
+      this.pagesLeft = this.pagesLeft - this.props.box15.max + leftOver;
+    }
+  },
+
+  calculateBox17: function(shipping){
+    while(this.pagesLeft > this.props.box17.min){
+      var _pages = this.pagesLeft >= this.props.box17.max ? this.props.box17.max : this.pagesLeft;
+      var leftOver = shipping.addBox17(_pages);
+
+      this.pagesLeft = this.pagesLeft - this.props.box17.max + leftOver;
+    }
+  },
+
+  calculateEnvT7: function(shipping){
+    while(this.pagesLeft > this.props.envT7.min){
+      var items = this.pagesLeft >= this.props.envT7.max ? this.props.envT7.max : this.pagesLeft;
+      var leftOver = shipping.addEnvT7(items);
+
+      this.pagesLeft = this.pagesLeft - this.props.envT7.max + leftOver;
+    }
+  },
+
+  calculateEnvT6: function(shipping){
+    while(this.pagesLeft > this.props.envT6.min){
+      var items = this.pagesLeft >= this.props.envT6.max ? this.props.envT6.max : this.pagesLeft;
+      var leftOver = shipping.addEnvT6(items);
+
+      this.pagesLeft = this.pagesLeft - this.props.envT6.max;
+    }
+  },
+
   calculate: function(quantity, pages){
     if(this.props == null) {
       throw new Error("Shiping service must be initialized with properties. Call init(properties).");
     }
 
-
-    var box15 = 0, box17 = 0, envT7 = 0, envT6 = 0;
+    var shipping = this.createShipping(pages);
 
     var totalPages = quantity * pages;
-    var pagesLeft = totalPages;
+    this.pagesLeft = totalPages;
 
-    if(totalPages < this.props.box15.min){
-      box15 = 0;
-    }
     if(totalPages >= this.props.box15.min && totalPages <= this.props.box15.max){
-      box15 = 1;
-    } else{
-      while(pagesLeft > this.props.box15.min || pagesLeft > this.props.box17.max){
-        pagesLeft = pagesLeft - this.props.box15.max;
-        box15++;
-      }
-      while(pagesLeft > this.props.box17.min){
-        pagesLeft = pagesLeft - this.props.box17.max;
-        box17++;
-      }
-      while(pagesLeft > this.props.envT7.min){
-        pagesLeft = pagesLeft - this.props.envT7.max;
-        envT7++;
-      }
-      while(pagesLeft > this.props.envT6.min){
-        pagesLeft = pagesLeft - this.props.envT6.max;
-        envT6++;
-      }
+      shipping.addBox15(totalPages);
+    } else {
+      this.calculateBox15(shipping);
+      this.calculateBox17(shipping);
+      this.calculateEnvT7(shipping);
+      this.calculateEnvT6(shipping);
     }
-
-    return {
-      box15: box15,
-      box17: box17,
-      envT7: envT7,
-      envT6: envT6
-    }
-  },
-
-  getShipping: function(address, pages){
-    var boxes = this.calculate(address.quantity, pages);
-    var shipping = this.createShipping();
-    shipping.address = address;
-    shipping.box15 = boxes.box15;
-    shipping.box17 = boxes.box17;
-    shipping.envT7 = boxes.envT7;
-    shipping.envT6 = boxes.envT6;
 
     return shipping;
   },
 
-  createShipping: function(){
-    return new Shipping();
+  getShipping: function(address, pages){
+    var shipping = this.calculate(address.quantity, pages);
+    shipping.address = address;
+    shipping.quantity = address.quantity;
+
+    return shipping;
+  },
+
+  createShipping: function(pages){
+    return new Shipping(pages);
   }
 
 }

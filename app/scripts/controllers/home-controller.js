@@ -55,7 +55,7 @@ define(['app'], function (app) {
                   };
 
 									$scope.calculateShippings = function(){
-										$scope.shippings = [];
+										$scope.shippings = [], $scope.shippingsPalette = [];
 
 										$scope.totals = {
 											quantity: 0,
@@ -66,16 +66,40 @@ define(['app'], function (app) {
 										}
 
 										angular.forEach($scope.addresses, function(address, idx){
-											serverService.calculateShipping(address, $scope.numberOfPages, function(shipping){
+											serverService.calculateShipping(address, $scope.numberOfPages).success(function(shipping){
 												console.log("shipping " + shipping);
-												$scope.shippings.push(shipping);
+
+												if(shipping.address.company == "LMPI" ||
+														shipping.address.company == "Distribution Directe" ||
+														shipping.address.company == "Voir Montreal"){
+													$scope.shippingsPalette.push(shipping)
+												}else{
+													$scope.shippings.push(shipping);
+												}
+
 
 												//update totals
 												$scope.totals.quantity += parseInt(address.quantity);
-												$scope.totals.box15 += shipping.box15;
-												$scope.totals.box17 += shipping.box17;
-												$scope.totals.envT7 += shipping.envT7;
-												$scope.totals.envT6 += shipping.envT6;
+
+												$scope.totals.box15 = 0;
+												for(var i=0; i < shipping.box15.length; i++){
+													$scope.totals.box15 += Number(shipping.box15[i]);
+												}
+
+												$scope.totals.box17 = 0;
+												for(var i=0; i < shipping.box17.length; i++){
+													$scope.totals.box17 += Number(shipping.box17[i]);
+												}
+
+												$scope.totals.envT6 = 0;
+												for(var i=0; i < shipping.envT7.length; i++){
+													$scope.totals.envT7 += Number(shipping.envT7[i]);
+												}
+
+												$scope.totals.envT7 = 0;
+												for(var i=0; i < shipping.envT6.length; i++){
+													$scope.totals.envT6 += Number(shipping.envT6[i]);
+												}
 
 											});
 										})
@@ -85,15 +109,15 @@ define(['app'], function (app) {
 
 
 									$scope.generateLabels = function(){
-										serverService.generateLabels($scope.shippings, function(filename){
-											$scope.labelsFilename = filename
-										})
+										serverService.generateLabels($scope.shippings).success(function(filename){
+											$scope.labelsFilename = filename;
+										});
 									}
 
 									$scope.generateInvoice = function(){
-										serverService.generateInvoice($scope.shippings, function(filename){
+										serverService.generateInvoice($scope.shippings).success(function(filename){
 											$scope.invoiceFilename = filename
-										})
+										});
 									}
 
 
