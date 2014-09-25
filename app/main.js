@@ -44,6 +44,7 @@ require( [
 	/*'services/',*/
 
 	'controllers/home-controller',
+	'controllers/config-controller',
 
 	'services/newspaper-service',
 	'services/server-service',

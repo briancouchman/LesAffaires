@@ -7,29 +7,7 @@ var excelService = require('./excel-service');
 var pdfService = require('./pdf-service');
 var shippingService = require('./shipping-service');
 
-
-var properties = require('properties');
 var props = {};
-
-var CONFIG_OPTIONS = {
-  path: true,
-  sections: true,
-  reviver: function(key, value, section){
-    //Do not split section lines
-    if (this.isSection) return this.assert ();
-
-    //Split all the string values by a comma
-    if (typeof value === "string"){
-      var values = value.split (",");
-      return values.length === 1 ? value : values;
-    }
-
-    //Do not split the rest of the lines
-    return this.assert ();
-  }
-}
-
-
 
 var app = express();
 
@@ -118,8 +96,52 @@ app.post('/shipping/:pages', function(req,res){
 })
 
 
-properties.parse('./config.properties', CONFIG_OPTIONS, function(error, obj){
-  props = obj;
+app.get('/config', function(req, res){
+  res.send(props);
+});
+
+app.post('/config', function(req,res){
+  var _config = JSON.stringify(req.body);
+
+    props = _config;
+    console.log("Saving configuration");
+    fs.writeFile('./config.json', props, function (err) {
+      if (err) throw err;
+
+      console.log("New configuration saved successfully");
+      shippingService.init(props);
+
+    })
+
+  res.send();
+})
+
+
+
+var props = (JSON.parse(fs.readFileSync("./config.json", "utf8")));
+
+console.log("Configuration loaded");
+console.log(props);
+
+
+shippingService.init(props);
+
+app.listen(5000);
+console.log("Server running on port 5000");
+
+/*
+fs.readFile('./config.json', 'utf8', function (err, data) {
+  if (err) {
+    console.log('Error: ' + err);
+    return;
+  }
+  //Loading properties
+  console.log("Loading properties");
+  console.log(data);
+
+  console.log("Converting JSON ");
+  props = JSON.parse(data);
+  console.log(props);
   console.log("Properties initialized");
   console.log(props);
 
@@ -128,3 +150,4 @@ properties.parse('./config.properties', CONFIG_OPTIONS, function(error, obj){
   console.log("Server running on port 5000");
   app.listen(5000);
 });
+*/

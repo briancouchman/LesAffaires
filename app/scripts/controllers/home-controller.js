@@ -1,8 +1,13 @@
 define(['app'], function (app) {
 	'use strict';
-	return app.controller('HomeCtrl', ['$scope','$upload', '$http', 'newspaperService', 'serverService', 'addressService',
-            function($scope, $upload, $http, newspaperService, serverService, addressService){
-                console.log("Starting Home Controller");
+	return app.controller('HomeCtrl', ['$scope','$upload', '$http', '$location', 'newspaperService', 'serverService', 'addressService',
+            function($scope, $upload, $http, $location, newspaperService, serverService, addressService){
+							  console.log("Starting Home Controller");
+
+								$scope.isActive = function (viewLocation) {
+						      return viewLocation === $location.path();
+						    };
+
 
                 var filesToUpload;
 								$scope.addresses = [];

@@ -3,7 +3,7 @@
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-<html data-framework="angularjs" bg-app> 
+<html data-framework="angularjs" bg-app>
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -65,11 +65,10 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#/about">About</a></li>
-            <li><a href="#/contact">Contact</a></li>
+            <li ng-class="{ active: isActive('/')}"><a href="#">Home</a></li>
+            <li ng-class="{ active: isActive('/config')}"><a href="#/config">Configuration</a></li>
           </ul>
-         
+
         </div><!--/.navbar-collapse -->
       </div>
     </div>

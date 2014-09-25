@@ -30,5 +30,17 @@ define(['angular', 'app'], function(angular, app) {
         console.log("Shiping generation failed. Error " + status);
       });
     }
+
+    this.getConfiguration = function(){
+      return $http.get(server + "/config").error(function(data, status, headers, config){
+        console.log("Error getting the configuration from the server.");
+      })
+    }
+
+    this.saveConfiguration = function(config){
+      return $http.post(server + "/config", config).error(function(data, status, headers, config){
+        console.log("Error sending the configuration from the server.");
+      })
+    }
   });
 });
