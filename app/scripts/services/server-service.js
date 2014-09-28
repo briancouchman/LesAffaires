@@ -12,8 +12,14 @@ define(['angular', 'app'], function(angular, app) {
      * @param callback the function to be executed when the server returns the response successfully
      * @return returns the promise created for the http call
      */
-    this.generateLabels = function(list){
-      return $http.post(server + '/labels', list).error(function(data, status, headers, config) {
+    this.generateShippingLabels = function(list){
+      return $http.post(server + '/shippings/labels', list).error(function(data, status, headers, config) {
+        console.log("PDF generation failed. Error " + status);
+      });
+    },
+
+    this.generatePaletteLabels = function(list){
+      return $http.post(server + '/palettes/labels', list).error(function(data, status, headers, config) {
         console.log("PDF generation failed. Error " + status);
       });
     },
@@ -28,6 +34,12 @@ define(['angular', 'app'], function(angular, app) {
     this.calculateShipping = function(address, pages){
       return $http.post(server + '/shipping/' + pages, address).error(function(data, status, headers, config) {
         console.log("Shiping generation failed. Error " + status);
+      });
+    }
+
+    this.calculatePalette = function(address){
+      return $http.post(server + '/palettes', address).error(function(data, status, headers, config) {
+        console.log("Palette generation failed. Error " + status);
       });
     }
 

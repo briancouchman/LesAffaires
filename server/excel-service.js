@@ -50,7 +50,7 @@ module.exports = {
     var addresses = [];
 
     if(records != null && typeof records !== "undefined"){
-      var ADDRESS=2, ADD_COMP=3, CITY=4, PROVINCE=5, ZIPCODE=6, QUANTITY=7, DEST=8, COMPANY=9;
+      var ADDRESS=2, ADD_COMP=3, CITY=4, PROVINCE=5, ZIPCODE=6, QUANTITY=7, DEST=8, COMPANY=9, DAY=10, HOUR=11,CARRIER=15;
       for(var j=0; j < records.length; j++){
         var row = records[j];
         if(row[ZIPCODE] != '' && row[QUANTITY] > 0){
@@ -64,6 +64,9 @@ module.exports = {
             if(row[QUANTITY] != "" && typeof row[QUANTITY] !== "undefined") address.quantity = row[QUANTITY];
             if(row[DEST] != "" && typeof row[DEST] !== "undefined")         address.dest = row[DEST];
             if(row[COMPANY] != "" && typeof row[COMPANY] !== "undefined")   address.company = row[COMPANY];
+            if(row[DAY] != "" && typeof row[DAY] !== "undefined")           address.day = row[DAY];
+            if(row[HOUR] != "" && typeof row[HOUR] !== "undefined")         address.hour = row[HOUR];
+            if(row[CARRIER] != "" && typeof row[CARRIER] !== "undefined")   address.carrier = row[CARRIER];
 
             addresses.push(address);
           }catch(e){

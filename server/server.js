@@ -4,8 +4,10 @@ var busboy = require('connect-busboy');
 var bodyParser = require('body-parser');
 
 var excelService = require('./excel-service');
-var pdfService = require('./pdf-service');
+var pdfShippingService = require('./pdf-shipping-service');
+var pdfPaletteService = require('./pdf-palette-service');
 var shippingService = require('./shipping-service');
+var paletteService = require('./palette-service');
 
 var props = {};
 
@@ -53,25 +55,44 @@ app.post('/upload', function(req, res) {
 
 
 /**
- * Generate the stickers for the given shipping
- * var _PDF_DIR_ = "./pdf/";
- * var _PDF_EXT_ = ".pdf";
+ * Generate the stickers for the given shippings
  */
-app.post('/labels', function(req, res) {
+app.post('/shippings/labels', function(req, res) {
   var shippings = req.body;
 
   var filename = Date.now().toString();
   console.log("Generate " + shippings.length + " shippings into " + filename);
 
 
-  pdfService.init(props.pdf.dir + filename + props.pdf.ext);
+  pdfShippingService.start(filename);
   for(var i = 0; i < shippings.length; i++){
-    pdfService.generateShipping(shippings[i]);
+    pdfShippingService.generateShipping(shippings[i]);
   }
-  pdfService.close();
+  pdfShippingService.close();
 
   res.send(filename);
 });
+
+
+/**
+ * Generate the stickers for the given palettes
+ */
+app.post('/palettes/labels', function(req, res) {
+  var palettes = req.body;
+
+  var filename = Date.now().toString();
+  console.log("Generate " + palettes.length + " palettes into " + filename);
+
+
+  pdfPaletteService.start(filename);
+  for(var i = 0; i < palettes.length; i++){
+    pdfPaletteService.generatePalettes(palettes[i]);
+  }
+  pdfPaletteService.close();
+
+  res.send(filename);
+});
+
 
 /**
  * Get the content of the PDF with the given filename
@@ -95,36 +116,54 @@ app.post('/shipping/:pages', function(req,res){
   res.send(shipping);
 })
 
+/**
+ * Generate and return a palette, based on the address and the quantity
+ */
+app.post('/palettes', function(req,res){
+  var address = req.body;
+
+  res.send(paletteService.calculate(address));
+})
+
+
 
 app.get('/config', function(req, res){
   res.send(props);
 });
 
 app.post('/config', function(req,res){
-  var _config = JSON.stringify(req.body);
+  var _config = JSON.stringify(req.body,null,2); //pretty print, indentation 2
 
-    props = _config;
-    console.log("Saving configuration");
-    fs.writeFile('./config.json', props, function (err) {
-      if (err) throw err;
+  props = _config;
+  console.log("Saving configuration");
+  fs.writeFile('./config.json', props, function (err) {
+    if (err) throw err;
 
-      console.log("New configuration saved successfully");
-      shippingService.init(props);
+    console.log("New configuration saved successfully");
 
-    })
+    initServices();
+
+  })
 
   res.send();
 })
 
 
 
-var props = (JSON.parse(fs.readFileSync("./config.json", "utf8")));
+var props = (JSON.parse(fs.readFileSync(__dirname + "/config.json", "utf8")));
+
+var initServices = function(){
+
+  shippingService.init(props);
+  paletteService.init(props);
+  pdfPaletteService.init(props);
+  pdfShippingService.init(props);
+}
 
 console.log("Configuration loaded");
 console.log(props);
 
-
-shippingService.init(props);
+initServices();
 
 app.listen(5000);
 console.log("Server running on port 5000");

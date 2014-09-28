@@ -4,6 +4,21 @@ define(['app'], function (app) {
             function($scope, $upload, $http, $location, newspaperService, serverService, addressService){
 							  console.log("Starting Home Controller");
 
+								var splitAddresses = function(addresses){
+									$scope.paletteAddresses = [], 	$scope.shippingAddresses = [];
+
+									angular.forEach(addresses, function(address, idx){
+										if(address.company == "LMPI" ||
+												address.company == "Distribution Directe" ||
+												address.company == "Voir Montreal"){
+											$scope.paletteAddresses.push(address)
+										}else{
+											$scope.shippingAddresses.push(address)
+										}
+									});
+								}
+
+
 								$scope.isActive = function (viewLocation) {
 						      return viewLocation === $location.path();
 						    };
@@ -44,6 +59,8 @@ define(['app'], function (app) {
 												$scope.addresses = data.addresses;
 												addressService.cleanIncompleteAddresses($scope.addresses);
 
+												splitAddresses($scope.addresses);
+
 												$scope.uploadError = null;
 												if($scope.addresses.length == 0){
 													$scope.uploadError = "Le ficher selectionne ne contient aucune addresse. Verifiez les fichier et reessayez.";
@@ -59,10 +76,12 @@ define(['app'], function (app) {
                     // $scope.upload = $upload.http({...})  see 88#issuecomment-31366487 for sample code.
                   };
 
-									$scope.calculateShippings = function(){
-										$scope.shippings = [], $scope.shippingsPalette = [];
 
-										$scope.totals = {
+
+									var calculateShippings = function(){
+										$scope.shippings = [];
+
+										$scope.shippingTotals = {
 											quantity: 0,
 											box15: 0,
 											box17: 0,
@@ -70,40 +89,30 @@ define(['app'], function (app) {
 											envT6: 0
 										}
 
-										angular.forEach($scope.addresses, function(address, idx){
+										angular.forEach($scope.shippingAddresses, function(address, idx){
 											serverService.calculateShipping(address, $scope.numberOfPages).success(function(shipping){
 												console.log("shipping " + shipping);
 
-												if(shipping.address.company == "LMPI" ||
-														shipping.address.company == "Distribution Directe" ||
-														shipping.address.company == "Voir Montreal"){
-													$scope.shippingsPalette.push(shipping)
-												}else{
-													$scope.shippings.push(shipping);
-												}
+												$scope.shippings.push(shipping);
 
 
 												//update totals
-												$scope.totals.quantity += parseInt(address.quantity);
+												$scope.shippingTotals.quantity += parseInt(shipping.address.quantity);
 
-												$scope.totals.box15 = 0;
 												for(var i=0; i < shipping.box15.length; i++){
-													$scope.totals.box15 += Number(shipping.box15[i]);
+													$scope.shippingTotals.box15 += Number(shipping.box15[i]);
 												}
 
-												$scope.totals.box17 = 0;
 												for(var i=0; i < shipping.box17.length; i++){
-													$scope.totals.box17 += Number(shipping.box17[i]);
+													$scope.shippingTotals.box17 += Number(shipping.box17[i]);
 												}
 
-												$scope.totals.envT6 = 0;
 												for(var i=0; i < shipping.envT7.length; i++){
-													$scope.totals.envT7 += Number(shipping.envT7[i]);
+													$scope.shippingTotals.envT7 += Number(shipping.envT7[i]);
 												}
 
-												$scope.totals.envT7 = 0;
 												for(var i=0; i < shipping.envT6.length; i++){
-													$scope.totals.envT6 += Number(shipping.envT6[i]);
+													$scope.shippingTotals.envT6 += Number(shipping.envT6[i]);
 												}
 
 											});
@@ -111,11 +120,31 @@ define(['app'], function (app) {
 
 									}
 
+									var calculatePalettes = function(){
+										$scope.paletteBlocks = [];
 
+										angular.forEach($scope.paletteAddresses, function(address, idx){
+											serverService.calculatePalette(address).success(function(palettes){
+												console.log(palettes);
+												$scope.paletteBlocks.push(palettes);
+											})
+										});
+									}
 
-									$scope.generateLabels = function(){
-										serverService.generateLabels($scope.shippings).success(function(filename){
-											$scope.labelsFilename = filename;
+									$scope.calculate = function(){
+										calculateShippings();
+										calculatePalettes();
+									}
+
+									$scope.generateShippingLabels = function(){
+										serverService.generateShippingLabels($scope.shippings).success(function(filename){
+											$scope.shippingLabelsFilename = filename;
+										});
+									}
+
+									$scope.generatePaletteLabels = function(){
+										serverService.generatePaletteLabels($scope.paletteBlocks).success(function(filename){
+											$scope.paletteLabelsFilename = filename;
 										});
 									}
 

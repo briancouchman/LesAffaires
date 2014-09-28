@@ -1,12 +1,12 @@
 define(['app'], function (app) {
 	'use strict';
-	return app.controller('ConfigCtrl', ['$scope', $location, 'serverService',
-      function($scope, $location, serverService){
+	return app.controller('ConfigCtrl', ['$scope', 'serverService',
+      function($scope, serverService){
         console.log("Starting Config Controller");
 
-				$scope.isActive = function (viewLocation) {
-					return viewLocation === $location.path();
-				};
+				//$scope.isActive = function (viewLocation) {
+				//	return viewLocation === $location.path();
+			//	};
 
 
 

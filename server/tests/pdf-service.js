@@ -1,6 +1,6 @@
 var assert = require("assert");
 var sinon = require("sinon");
-var pdfService = require("../pdf-service");
+var pdfService = require("../pdf--shipping-service");
 
 
 describe('PDF Generation', function(){

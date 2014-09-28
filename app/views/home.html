@@ -47,7 +47,7 @@
       </div>
     </div>
     <div class="col-md-2">
-      <button class="btn btn-primary btn-sm" ng-click="calculateShippings()">Calculer</button>
+      <button class="btn btn-primary btn-sm" ng-click="calculate()">Calculer</button>
     </div>
   </div>
 </form>
@@ -55,9 +55,9 @@
 
 <div class="row" ng-show="shippings.length > 0">
   <div class="col-md-12">
-      <h2>Etape 3 - Verifier les adresses</h2>
-      <button class="btn btn-small btn-primary"  ng-click="generateLabels()" >Generer les etiquettes</button>
-      <a class="btn btn-small btn-primary" ng-show="labelsFilename != null" href="http://localhost:5000/labels/{{labelsFilename}}">Imprimer les etiquettes</a>
+      <h2>Etape 3 - Verifier les envois</h2>
+      <button class="btn btn-small btn-primary"  ng-click="generateShippingLabels()" >Generer les etiquettes</button>
+      <a class="btn btn-small btn-primary" ng-show="shippingLabelsFilename != null" href="http://localhost:5000/labels/{{shippingLabelsFilename}}">Imprimer les etiquettes</a>
 
       &nbsp;
 
@@ -78,14 +78,14 @@
         </thead>
         <tbody>
           <tr class="info">
-            <td><strong>{{addresses.length}}<strong></td>
+            <td><strong>{{shippingAddresses.length}}<strong></td>
             <td></td>
-            <td>{{totals.quantity}}</td>
-            <td>{{totals.box15}}</td>
-            <td>{{totals.box17}}</td>
-            <td>{{totals.envT7}}</td>
-            <td>{{totals.envT6}}</td>
-            <td>{{totals.box15 + totals.box17 + totals.envT7 + totals.envT6}}</td>
+            <td>{{shippingTotals.quantity}}</td>
+            <td>{{shippingTotals.box15}}</td>
+            <td>{{shippingTotals.box17}}</td>
+            <td>{{shippingTotals.envT7}}</td>
+            <td>{{shippingTotals.envT6}}</td>
+            <td>{{shippingTotals.box15 + shippingTotals.box17 + shippingTotals.envT7 + shippingTotals.envT6}}</td>
           </tr>
           <tr ng-repeat="shipping in shippings">
             <td>{{shipping.address.dest}}</td>
@@ -102,6 +102,57 @@
             <td><ul class="list-unstyled"><li ng-repeat="items in shipping.envT7 track by $index">1x{{items}}</li></ul></td>
             <td><ul class="list-unstyled"><li ng-repeat="items in shipping.envT6 track by $index">1x{{items}}</li></ul></td>
             <td>{{shipping.box15.length + shipping.box17.length + shipping.envT7.length + shipping.envT6.length}}</td>
+          </tr>
+        </tbody>
+      </table>
+  </div>
+</div>
+
+
+
+<div class="row" ng-show="shippings.length > 0">
+  <div class="col-md-12">
+      <h2>Etape 4 - Verifier les palettes</h2>
+      <button class="btn btn-small btn-primary"  ng-click="generatePaletteLabels()" >Generer les etiquettes</button>
+      <a class="btn btn-small btn-primary" ng-show="paletteLabelsFilename != null" href="http://localhost:5000/labels/{{paletteLabelsFilename}}">Imprimer les etiquettes</a>
+
+      &nbsp;
+
+      <button class="btn btn-small btn-primary" ng-show="invoiceFilename == null"ng-click="generateInvoice()" >Generer la facture</button>
+      <a class="btn btn-small btn-primary" ng-show="invoiceFilename != null" href="http://localhost:5000/invoice/{{invoiceFilename}}">Imprimer la facture</a>
+
+
+      <table class="table table-condensed">
+        <thead>
+          <th>Dest.</th>
+          <th>Address</th>
+          <th>Quantity</th>
+          <th>Palette</th>
+        </thead>
+        <tbody>
+          <tr ng-repeat="palettes in paletteBlocks">
+            <td>{{palettes[0].address.dest}}</td>
+            <td>
+              <address>
+                <strong>{{palettes[0].address.company}}</strong><br/>
+                {{palettes[0].address.address}}, {{palettes[0].address.add_comp}}<br/>
+                {{palettes[0].address.city}}, {{palettes[0].address.province}} {{palettes[0].address.zipcode}}
+              </address>
+            </td>
+            <td>{{palettes[0].address.quantity}}</td>
+            <td>
+              <strong>{{palettes.length}} palettes</strong>
+              <ul class="list-unstyled" style="margin-left:5px;">
+                <li ng-repeat="palette in palettes">
+                  {{palette.rows.length}} etages
+                  <ul class="list-unstyled" style="margin-left:5px;">
+                    <li ng-repeat="row in palette.rows">
+                      <span ng-repeat="packet in row track by $index">{{packet}},</span>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </td>
           </tr>
         </tbody>
       </table>
