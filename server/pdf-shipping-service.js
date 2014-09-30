@@ -1,7 +1,7 @@
 var PDFDocument = require("pdfkit");
 var fs = require("fs");
 
-
+var props;
 
 var isDefined = function(obj){
   return obj != null && obj != '' && typeof obj !== 'undefined';
@@ -9,10 +9,10 @@ var isDefined = function(obj){
 
 var addLesAffairesLogo = function(doc){
 
-  doc.image('./img/logo_lesaffaires.png', 5, 15, {width: 150});
+  doc.image(__dirname + '/img/logo_lesaffaires.png', 5, 15, {width: 150});
 
   doc.fontSize(8);
-  doc.font('./font/Arial_Narrow.ttf');
+  doc.font(__dirname + '/font/Arial_Narrow.ttf');
   doc.text("1100, boul. René-Lévesque Ouest, 24e étage", 200, 20, {width: 150})
      .text("Montréal (Québec) H3B 4X9").moveDown(0.4)
      .text("Téléphone: 514-392-9000");
@@ -21,17 +21,16 @@ var addLesAffairesLogo = function(doc){
 
 
 module.exports = {
-  init: function(props){
-    PDF_DIR = props.pdf.dir;
-    PDF_EXT = props.pdf.ext;
+  init: function(_props){
+    props = _props;
   },
 
   start: function(filename){
-    if(PDF_DIR == null && PDF_EXT == null){
+    if(props.pdf.dir == null && props.pdf.ext == null){
       throw new Error("PDF service must be initialized with the pdf configuration. Call pdfService.init(props);");
     }
 
-    var filepath = __dirname + PDF_DIR + "/" + filename + PDF_EXT;
+    var filepath = __dirname + props.pdf.dir + "/" + filename + props.pdf.ext;
 
     this.doc = new PDFDocument({
       layout: 'landscape',
@@ -141,6 +140,10 @@ module.exports = {
     this.doc.fontSize(11)
             .text(this.getBoxType(options.boxType), 280, 150, {width: 60, align: 'right'});
 
+    if(isDefined(address.carrier)){
+      this.doc.fontSize(11)
+              .text(address.carrier, 280, 180, {width: 60, align: 'right'});
+    }
 
     this.doc.addPage();
   },

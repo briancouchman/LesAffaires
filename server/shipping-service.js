@@ -56,13 +56,13 @@ module.exports = {
     var totalPages = quantity * pages;
     this.pagesLeft = totalPages;
 
-    if(totalPages >= this.props.box15.min && totalPages <= this.props.box15.max){
+    if(totalPages >= this.props.box15.min && totalPages <= this.props.box15.max && this.props.box15.available ){
       shipping.addBox15(totalPages);
     } else {
-      this.calculateBox15(shipping);
-      this.calculateBox17(shipping);
-      this.calculateEnvT7(shipping);
-      this.calculateEnvT6(shipping);
+      if(this.props.box15.available) this.calculateBox15(shipping);
+      if(this.props.box17.available) this.calculateBox17(shipping);
+      if(this.props.envT7.available) this.calculateEnvT7(shipping);
+      if(this.props.envT6.available) this.calculateEnvT6(shipping);
     }
 
     return shipping;

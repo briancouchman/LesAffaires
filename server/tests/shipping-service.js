@@ -4,23 +4,27 @@ var shippingService = require("../shipping-service.js");
 
 describe('Shipping service', function(){
   var props = {};
-  before(function(){
+  beforeEach(function(){
     shippingService.init({
       box15:{
         min: 2800,
-        max: 4000
+        max: 4000,
+        available: true
       },
       box17:{
         min: 1000,
-        max: 2800
+        max: 2800,
+        available: true
       },
       envT7:{
         min: 400,
-        max: 1000
+        max: 1000,
+        available: true
       },
       envT6:{
         min: 0,
-        max: 400
+        max: 400,
+        available: true
       }
     });
   });
@@ -145,6 +149,56 @@ describe('Shipping service', function(){
       assert.deepEqual([], results.box17);
       assert.deepEqual([], results.envT7);
       assert.deepEqual([], results.envT6);
+    })
+
+  })
+
+
+  describe('#calculate', function(){
+    it('should not count box15 if unavailable', function(){
+      shippingService.props.box15.available = false;
+
+      var results = shippingService.calculate(100, 40);
+
+      assert.deepEqual([], results.box15);
+      assert.deepEqual([70,30], results.box17);
+      assert.deepEqual([], results.envT7);
+      assert.deepEqual([], results.envT6);
+    })
+
+    it('should not count box15 and box17 if unavailable', function(){
+      shippingService.props.box15.available = false;
+      shippingService.props.box17.available = false;
+
+      var results = shippingService.calculate(100, 40);
+
+      assert.deepEqual([], results.box15);
+      assert.deepEqual([], results.box17);
+      assert.deepEqual([25,25,25,25], results.envT7);
+      assert.deepEqual([], results.envT6);
+    })
+
+    it('should not count box17 if unavailable', function(){
+      shippingService.props.box17.available = false;
+
+      var results = shippingService.calculate(120, 40);
+
+      assert.deepEqual([100], results.box15);
+      assert.deepEqual([], results.box17);
+      assert.deepEqual([20], results.envT7);
+      assert.deepEqual([], results.envT6);
+    })
+
+    it('should not count box17 and envT7 if unavailable', function(){
+      shippingService.props.box17.available = false;
+      shippingService.props.envT7.available = false;
+
+      var results = shippingService.calculate(120, 40);
+
+      assert.deepEqual([100], results.box15);
+      assert.deepEqual([], results.box17);
+      assert.deepEqual([], results.envT7);
+      assert.deepEqual([10,10], results.envT6);
     })
 
   })

@@ -98,7 +98,8 @@ app.post('/palettes/labels', function(req, res) {
  * Get the content of the PDF with the given filename
  */
 app.get('/labels/:filename', function(req, res) {
-  fs.readFile(props.pdf.dir+ req.params.filename + props.pdf.ext, function (err,data){
+  var filepath = __dirname + props.pdf.dir + "/" + req.params.filename + props.pdf.ext;
+  fs.readFile(filepath, function (err,data){
      res.contentType("application/pdf");
      res.send(data);
   });
@@ -132,11 +133,11 @@ app.get('/config', function(req, res){
 });
 
 app.post('/config', function(req,res){
-  var _config = JSON.stringify(req.body,null,2); //pretty print, indentation 2
+  props = req.body;
 
-  props = _config;
   console.log("Saving configuration");
-  fs.writeFile('./config.json', props, function (err) {
+  var _config_str = JSON.stringify(props,null,2); //pretty print, indentation 2
+  fs.writeFile('./config.json', _config_str, function (err) {
     if (err) throw err;
 
     console.log("New configuration saved successfully");
@@ -153,7 +154,6 @@ app.post('/config', function(req,res){
 var props = (JSON.parse(fs.readFileSync(__dirname + "/config.json", "utf8")));
 
 var initServices = function(){
-
   shippingService.init(props);
   paletteService.init(props);
   pdfPaletteService.init(props);

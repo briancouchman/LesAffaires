@@ -6,23 +6,22 @@ var isDefined = function(obj){
   return obj != null && obj != '' && typeof obj !== 'undefined';
 }
 
-var PDF_DIR, PDF_EXT;
+var props;
 
 
 module.exports = {
 
 
-  init: function(props){
-    PDF_DIR = props.pdf.dir;
-    PDF_EXT = props.pdf.ext;
+  init: function(_props){
+    props = _props;
   },
 
   start: function(filename){
-    if(PDF_DIR == null && PDF_EXT == null){
+    if(props.pdf.dir == null && props.pdf.ext == null){
       throw new Error("PDF service must be initialized with the pdf configuration. Call pdfService.init(props);");
     }
 
-    var filepath = __dirname + PDF_DIR + "/" + filename + PDF_EXT;
+    var filepath = __dirname + props.pdf.dir + "/" + filename + props.pdf.ext;
 
     this.doc = new PDFDocument({
       layout: 'portrait',
