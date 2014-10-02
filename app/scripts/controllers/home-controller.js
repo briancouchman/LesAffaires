@@ -138,19 +138,19 @@ define(['app'], function (app) {
 
 									$scope.generateShippingLabels = function(){
 										serverService.generateShippingLabels($scope.shippings).success(function(filename){
-											$scope.shippingLabelsFilename = filename;
+											serverService.getPDF(filename, 1);
 										});
 									}
 
 									$scope.generatePaletteLabels = function(){
 										serverService.generatePaletteLabels($scope.paletteBlocks).success(function(filename){
-											$scope.paletteLabelsFilename = filename;
+											serverService.getPDF(filename, 1);
 										});
 									}
 
 									$scope.generateInvoice = function(){
 										serverService.generateInvoice($scope.shippings).success(function(filename){
-											$scope.invoiceFilename = filename
+											serverService.getPDF(filename);
 										});
 									}
 

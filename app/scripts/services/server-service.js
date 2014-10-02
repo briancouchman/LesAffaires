@@ -1,6 +1,6 @@
 define(['angular', 'app'], function(angular, app) {
   //console.log("Defining services");
-  return app.service('serverService', function($http, $q){
+  return app.service('serverService', function($http, $q, $window){
     console.log("Starting serverService");
 
     var server = "http://localhost:5000";
@@ -53,6 +53,12 @@ define(['angular', 'app'], function(angular, app) {
       return $http.post(server + "/config", config).error(function(data, status, headers, config){
         console.log("Error sending the configuration from the server.");
       })
+    }
+
+    this.getPDF = function(filename, timeout) {
+      setTimeout(function(){
+        $window.open(server + "/pdf/" + filename);
+      }, timeout ? timeout * 1000 : 1);
     }
   });
 });

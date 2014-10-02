@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 var excelService = require('./excel-service');
 var pdfShippingService = require('./pdf-shipping-service');
 var pdfPaletteService = require('./pdf-palette-service');
+var pdfInvoiceService = require('./pdf-invoice-service');
 var shippingService = require('./shipping-service');
 var paletteService = require('./palette-service');
 
@@ -60,15 +61,13 @@ app.post('/upload', function(req, res) {
 app.post('/shippings/labels', function(req, res) {
   var shippings = req.body;
 
-  var filename = Date.now().toString();
-  console.log("Generate " + shippings.length + " shippings into " + filename);
-
-
-  pdfShippingService.start(filename);
+  var filename = pdfShippingService.start();
   for(var i = 0; i < shippings.length; i++){
     pdfShippingService.generateShipping(shippings[i]);
   }
   pdfShippingService.close();
+
+  console.log("Generate " + shippings.length + " shippings into " + filename);
 
   res.send(filename);
 });
@@ -80,11 +79,10 @@ app.post('/shippings/labels', function(req, res) {
 app.post('/palettes/labels', function(req, res) {
   var palettes = req.body;
 
-  var filename = Date.now().toString();
   console.log("Generate " + palettes.length + " palettes into " + filename);
 
 
-  pdfPaletteService.start(filename);
+  var filename = pdfPaletteService.start();
   for(var i = 0; i < palettes.length; i++){
     pdfPaletteService.generatePalettes(palettes[i]);
   }
@@ -97,11 +95,11 @@ app.post('/palettes/labels', function(req, res) {
 /**
  * Get the content of the PDF with the given filename
  */
-app.get('/labels/:filename', function(req, res) {
+app.get('/pdf/:filename', function(req, res) {
   var filepath = __dirname + props.pdf.dir + "/" + req.params.filename + props.pdf.ext;
   fs.readFile(filepath, function (err,data){
-     res.contentType("application/pdf");
-     res.send(data);
+    res.contentType("application/pdf");
+    res.send(data);
   });
 })
 
@@ -128,6 +126,30 @@ app.post('/palettes', function(req,res){
 
 
 
+/**
+ * Generate an invoice summarizing the costs of the shipping
+ */
+app.post('/invoice', function(req,res){
+  var shippings = req.body;
+
+
+  var filename = pdfInvoiceService.start();
+  pdfInvoiceService.generateInvoice(shippings);
+  pdfInvoiceService.close();
+
+  console.log("Generate invoice into " + filename);
+
+  res.send(filename);
+})
+
+
+
+
+
+/**
+ * Configuration loading and persisting
+ * Configuration is stored in the file config.json
+ */
 app.get('/config', function(req, res){
   res.send(props);
 });
@@ -137,10 +159,11 @@ app.post('/config', function(req,res){
 
   console.log("Saving configuration");
   var _config_str = JSON.stringify(props,null,2); //pretty print, indentation 2
-  fs.writeFile('./config.json', _config_str, function (err) {
+  fs.writeFile(__dirname + '/config.json', _config_str, function (err) {
     if (err) throw err;
 
     console.log("New configuration saved successfully");
+    console.log(props);
 
     initServices();
 
@@ -158,7 +181,9 @@ var initServices = function(){
   paletteService.init(props);
   pdfPaletteService.init(props);
   pdfShippingService.init(props);
+  pdfInvoiceService.init(props);
 }
+
 
 console.log("Configuration loaded");
 console.log(props);

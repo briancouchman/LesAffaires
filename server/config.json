@@ -1,1 +1,35 @@
-{"box15":{"min":3000,"max":4000, "available": true},"box17":{"min":2000,"max":2800,"available": true},"envT7":{"min":400,"max":1100,"available": true},"envT6":{"min":10,"max":400,"available": true},"pdf":{"dir":"/pdf","ext":".pdf"},"palette":{"destList":["LMPI","Distribution Directe","Voir Montreal"]}, "palette": {"maxPacketsPerLevel": 11, "maxItemsPerPacket": 25, "maxLevelsPerPalette": 10}}
+{
+  "box15": {
+    "min": 3000,
+    "max": 4000,
+    "available": true,
+    "price": "6.2"
+  },
+  "box17": {
+    "min": 2000,
+    "max": 2800,
+    "available": true,
+    "price": "5.4"
+  },
+  "envT7": {
+    "min": 400,
+    "max": 1100,
+    "available": true,
+    "price": "3.2"
+  },
+  "envT6": {
+    "min": 10,
+    "max": 400,
+    "available": true,
+    "price": "2.1"
+  },
+  "pdf": {
+    "dir": "/pdf",
+    "ext": ".pdf"
+  },
+  "palette": {
+    "maxPacketsPerLevel": 11,
+    "maxItemsPerPacket": 25,
+    "maxLevelsPerPalette": 10
+  }
+}

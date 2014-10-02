@@ -14,6 +14,6 @@ NPM
   npm install fs
   npm install connect-busboy
   npm install excel-parser
-  npm install pdfkit
   npm install wkhtmlpdf
   npm install body-parser
+  npm install briancouchman/pdfkit

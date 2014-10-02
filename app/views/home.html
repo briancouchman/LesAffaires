@@ -56,13 +56,11 @@
 <div class="row" ng-show="shippings.length > 0">
   <div class="col-md-12">
       <h2>Etape 3 - Verifier les envois</h2>
-      <button class="btn btn-small btn-primary" ng-show="shippingLabelsFilename == null" ng-click="generateShippingLabels()" >Generer les etiquettes</button>
-      <a class="btn btn-small btn-success" ng-show="shippingLabelsFilename != null" href="http://localhost:5000/labels/{{shippingLabelsFilename}}">Imprimer les etiquettes</a>
+      <button class="btn btn-small btn-primary" ng-click="generateShippingLabels()" >Generer les etiquettes</button>
 
       &nbsp;
 
-      <button class="btn btn-small btn-primary" ng-show="invoiceFilename == null"ng-click="generateInvoice()" >Generer la facture</button>
-      <a class="btn btn-small btn-success" ng-show="invoiceFilename != null" href="http://localhost:5000/invoice/{{invoiceFilename}}">Imprimer la facture</a>
+      <button class="btn btn-small btn-success" ng-click="generateInvoice()" >Generer la facture</button>
 
 
       <table class="table table-condensed">
@@ -116,14 +114,7 @@
 <div class="row" ng-show="shippings.length > 0">
   <div class="col-md-12">
       <h2>Etape 4 - Verifier les palettes</h2>
-      <button class="btn btn-small btn-primary" ng-show="paletteLabelsFilename == null" ng-click="generatePaletteLabels()" >Generer les etiquettes</button>
-      <a class="btn btn-small btn-success" ng-show="paletteLabelsFilename != null" href="http://localhost:5000/labels/{{paletteLabelsFilename}}">Imprimer les etiquettes</a>
-
-      &nbsp;
-
-      <button class="btn btn-small btn-primary" ng-show="invoiceFilename == null"ng-click="generateInvoice()" >Generer la facture</button>
-      <a class="btn btn-small btn-success" ng-show="invoiceFilename != null" href="http://localhost:5000/invoice/{{invoiceFilename}}">Imprimer la facture</a>
-
+      <button class="btn btn-small btn-primary" ng-click="generatePaletteLabels()" >Generer les etiquettes</button>
 
       <table class="table table-condensed">
         <thead>

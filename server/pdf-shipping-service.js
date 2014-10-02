@@ -25,11 +25,12 @@ module.exports = {
     props = _props;
   },
 
-  start: function(filename){
+  start: function(){
     if(props.pdf.dir == null && props.pdf.ext == null){
       throw new Error("PDF service must be initialized with the pdf configuration. Call pdfService.init(props);");
     }
 
+    var filename = "shipping-" + Date.now().toString();
     var filepath = __dirname + props.pdf.dir + "/" + filename + props.pdf.ext;
 
     this.doc = new PDFDocument({
@@ -38,6 +39,8 @@ module.exports = {
       margin:10
     });
     this.doc.pipe(fs.createWriteStream(filepath));
+
+    return filename;
   },
 
   generateShipping: function(shipping){
