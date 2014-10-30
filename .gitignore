@@ -1,5 +1,7 @@
 .nide
+server/public/.idea/*
 app/bower_components/*
 node_modules/*
+server/pdf/*
 
 *.xls

@@ -31,5 +31,6 @@
     "maxPacketsPerLevel": 11,
     "maxItemsPerPacket": 25,
     "maxLevelsPerPalette": 10
-  }
+  },
+  "port": 5000
 }

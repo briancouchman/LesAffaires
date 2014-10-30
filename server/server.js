@@ -15,6 +15,17 @@ var props = {};
 var app = express();
 
 /**
+ * Application
+ */
+app.use(express.static(__dirname+'/public/'));
+
+app.get('/', function(req, res){
+    res.sendfile(__dirname + '/public/index.html');
+});
+
+
+
+/**
  * Cross domain enabling
  */
 app.all('/*', function(req, res, next) {
@@ -166,12 +177,10 @@ app.post('/config', function(req,res){
     console.log(props);
 
     initServices();
-
   })
 
   res.send();
 })
-
 
 
 var props = (JSON.parse(fs.readFileSync(__dirname + "/config.json", "utf8")));
@@ -184,34 +193,10 @@ var initServices = function(){
   pdfInvoiceService.init(props);
 }
 
-
 console.log("Configuration loaded");
 console.log(props);
 
 initServices();
 
-app.listen(5000);
-console.log("Server running on port 5000");
-
-/*
-fs.readFile('./config.json', 'utf8', function (err, data) {
-  if (err) {
-    console.log('Error: ' + err);
-    return;
-  }
-  //Loading properties
-  console.log("Loading properties");
-  console.log(data);
-
-  console.log("Converting JSON ");
-  props = JSON.parse(data);
-  console.log(props);
-  console.log("Properties initialized");
-  console.log(props);
-
-  shippingService.init(props);
-
-  console.log("Server running on port 5000");
-  app.listen(5000);
-});
-*/
+app.listen(props.port);
+console.log("Server running on port " + props.port);

@@ -4,6 +4,11 @@
   "version": "0.1.0",
   "author": "Brian Couchman",
   "dependencies": {
+    "body-parser": "^1.9.2",
+    "connect-busboy": "0.0.2",
+    "express": "^4.10.1",
+    "node-fs": "*",
+    "pdfkit": "^0.7.0",
     "properties": "^1.2.1"
   },
   "devDependencies": {
