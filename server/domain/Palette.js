@@ -39,7 +39,7 @@ method.addItems = function(items){
   }
 }
 
-method.getTotal = function(){
+method.total = function(){
   var total = 0;
 
   for(var i = 0; i < this.rows.length; i++){
@@ -50,5 +50,6 @@ method.getTotal = function(){
 
   return total;
 }
+
 
 module.exports = Palette;

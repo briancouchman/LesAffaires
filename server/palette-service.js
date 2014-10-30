@@ -33,7 +33,7 @@ module.exports = {
 
       palettes.push(palette);
 
-      quantityLeft = quantityLeft - palette.getTotal();
+      quantityLeft = quantityLeft - palette.total();
     }
 
     return palettes;

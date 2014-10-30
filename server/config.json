@@ -3,25 +3,25 @@
     "min": 3000,
     "max": 4000,
     "available": true,
-    "price": "6.2"
+    "price": "6.6"
   },
   "box17": {
     "min": 2000,
     "max": 2800,
     "available": true,
-    "price": "5.4"
+    "price": "4.4"
   },
   "envT7": {
     "min": 400,
     "max": 1100,
     "available": true,
-    "price": "3.2"
+    "price": "3.3"
   },
   "envT6": {
     "min": 10,
     "max": 400,
     "available": true,
-    "price": "2.1"
+    "price": "2.2"
   },
   "pdf": {
     "dir": "/pdf",

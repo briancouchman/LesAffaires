@@ -1,5 +1,6 @@
 var PDFDocument = require("pdfkit");
 var fs = require("fs");
+var Palette = require("./domain/Palette");
 
 
 var isDefined = function(obj){
@@ -34,16 +35,33 @@ module.exports = {
     return filename;
   },
 
+  total: function(palette){
+      var total = 0;
+
+      for(var i = 0; i < palette.rows.length; i++){
+          for(var j = 0; j < palette.rows[i].length; j++){
+              total += palette.rows[i][j];
+          }
+      }
+
+      return total;
+  },
+
   generatePalettes: function(palettes){
     var totalPalettes = palettes.length;
-    var currentPalette = 1;
+    var currentPalette = 1, cumulTotal = 0;
     for(var i = 0; i < palettes.length; i++){
       var palette = palettes[i];
+
+      var currentTotal = this.total(palette);
+      cumulTotal += currentTotal;
+
       this.generateLabel({
         address: palette.address,
         currentPalette: currentPalette++,
         totalPalettes: totalPalettes,
-        currentQty: 0,
+        currentQty: currentTotal,
+        cumulTotal: cumulTotal,
         totalQty: palette.address.quantity,
         itemsPerPacket: palette.itemsPerPacket,
         packetsPerLevel: palette.packetsPerLevel
@@ -64,7 +82,7 @@ module.exports = {
 
 
     this.doc.fontSize(14)
-    cursor=this.doc.text("JOB ID:", 30, 200);
+    cursor=this.doc.text("", 30, 200);
 
     if(isDefined(address.dest)){
       cursor.text(address.dest)
@@ -107,12 +125,12 @@ module.exports = {
 
     this.doc.text("QTE CETTE PALETTE: " + options.currentQty).moveDown();
 
-    this.doc.text("Qte cumulative: ??? ");
+    this.doc.text("Qte cumulative: " + options.cumulTotal);
     this.doc.text("Qte commandee: " + Math.round(options.totalQty)).moveDown();
 
     this.addLine(505);
     this.doc.text("Copies / Paquet: " + options.itemsPerPacket);
-    this.doc.text("Paquet / Rangee: " + options.packetPerLevel);
+    this.doc.text("Paquet / Rangee: " + options.packetsPerLevel);
 
     this.addLine(550);
 
