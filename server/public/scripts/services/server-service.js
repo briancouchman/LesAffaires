@@ -3,7 +3,7 @@ define(['angular', 'app'], function(angular, app) {
   return app.service('serverService', function($http, $q, $window){
     console.log("Starting serverService");
 
-    var server = "http://localhost:5000";
+    var server = "";
 
     /**
      * Sends a list of addresses t the server, so that a PDF is generated

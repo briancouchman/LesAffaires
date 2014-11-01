@@ -114,22 +114,22 @@ module.exports = {
       var shipping = shippings[i];
 
       for(var j = 0; j < shipping.box15.length; j++){
-        boxes.box15.qty += shipping.box15[j];
+        boxes.box15.qty++;
       }
       boxes.box15.price = (boxes.box15.qty * props.box15.price).toFixed(2);
 
       for(var j = 0; j < shipping.box17.length; j++){
-        boxes.box17.qty += shipping.box17[j];
+        boxes.box17.qty++;
       }
       boxes.box17.price = (boxes.box17.qty * props.box17.price).toFixed(2);
 
       for(var j = 0; j < shipping.envT7.length; j++){
-        boxes.envT7.qty += shipping.envT7[j];
+        boxes.envT7.qty++;
       }
       boxes.envT7.price = (boxes.envT7.qty * props.envT7.price).toFixed(2);
 
       for(var j = 0; j < shipping.envT6.length; j++){
-        boxes.envT6.qty += shipping.envT6[j];
+        boxes.envT6.qty++;
       }
       boxes.envT6.price = (boxes.envT6.qty * props.envT6.price).toFixed(2);
 
@@ -142,7 +142,7 @@ module.exports = {
       {container: 'Boites de 17 pouces', quantity: boxes.box17.qty, unitPrice: parseFloat(props.box17.price), total: boxes.box17.price },
       {container: 'Enveloppe T7', quantity: boxes.envT7.qty, unitPrice: parseFloat(props.envT7.price), total: boxes.envT7.price },
       {container: 'Enveloppe T6', quantity: boxes.envT6.qty, unitPrice: parseFloat(props.envT6.price), total: boxes.envT6.price},
-      {container: 'Total', quantity: boxes.qtyTotal, unitPrice: "", total: boxes.priceTotal }
+      {container: 'Total', quantity: boxes.qtyTotal.toFixed(), unitPrice: "--", total: boxes.priceTotal.toFixed(2) }
     ]
   },
 

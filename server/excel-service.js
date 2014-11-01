@@ -1,49 +1,55 @@
 var excelParser = require('excel-parser');
 
 module.exports = {
-  parseExcel: function (filename, callback, errorCallback){
-      console.log("Parsing " + filename);
-      excelParser.parse({
-        inFile: filename,
-        worksheet: 1,
-      },function(err, records){
-        if(err) {
-          console.error("Parsing with error: " + err);
-          errorCallback.call(this, err);
-        }else{
-          console.log("Parsing successful");
-          //console.log(records);
-          this.processRecords(records, callback);
+    parseExcel: function (filename, callback, errorCallback){
+        console.log("Parsing " + filename);
+        excelParser.parse({
+            inFile: filename,
+            worksheet: 1
+        },function(err, records){
+            if(err) {
+                console.error("Parsing with error: " + err);
+                errorCallback.call(this, err);
+            }else{
+                console.log("Parsing successful");
+                //console.log(records);
+                this.processRecords(records, callback);
+            }
+        }.bind(this));
+    },
+    processRecords: function (records, callback) {
+        var startRow = this.getStartRow(records);
+
+        var edition = {
+            addresses: this.extractAddresses(records.slice(startRow)),
+            date: this.getEditionDate(records)
         }
-      }.bind(this));
-  },
-  processRecords: function (records, callback) {
-    var startRow = this.getStartRow(records);
 
-    var addresses = this.extractAddresses(records.slice(startRow));
-
-    if(typeof callback === 'function'){
-      callback.call(this, addresses);
-    }
-  },
-
-
-  getStartRow: function(records){
-    var startRow = -1;
-
-    if(records != null && typeof records !== "undefined") {
-      //Find the starting point
-      for(var i=0; i < records.length; i++){
-        var row = records[i];
-        if(row[0] == "Adressage"){
-          startRow = i;
-          break;
+        if(typeof callback === 'function'){
+            callback.call(this, edition);
         }
-      }
-    }
+    },
 
-    return startRow;
-  },
+    getEditionDate: function(records){
+        return new String(records[3][5]);
+    },
+
+    getStartRow: function(records){
+        var startRow = -1;
+
+        if(records != null && typeof records !== "undefined") {
+            //Find the starting point
+            for(var i=0; i < records.length; i++){
+                var row = records[i];
+                if(row[0] == "Adressage"){
+                    startRow = i;
+                    break;
+                }
+            }
+        }
+
+        return startRow;
+    },
 
 
   extractAddresses: function(records){

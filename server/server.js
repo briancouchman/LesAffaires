@@ -53,8 +53,8 @@ app.post('/upload', function(req, res) {
         fstream.on('close', function () {
             console.log("Closing stream");
             excelService.parseExcel(__dirname + '/files/' + filename,
-            function(addresses){
-              res.send({uploaded: true, fileName: filename, addresses: addresses});
+            function(edition){
+              res.send({uploaded: true, fileName: filename, addresses: edition.addresses, date: edition.date});
             },
             function(err){
               res.status(400).send({uploaded: false, error: err});

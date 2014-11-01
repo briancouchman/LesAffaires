@@ -5,7 +5,7 @@ var Palette = require("./domain/Palette");
 
 var isDefined = function(obj){
   return obj != null && obj != '' && typeof obj !== 'undefined';
-}
+};
 
 var props;
 
@@ -13,143 +13,130 @@ var props;
 module.exports = {
 
 
-  init: function(_props){
-    props = _props;
-  },
+    init: function(_props){
+        props = _props;
+    },
 
-  start: function(){
-    if(props.pdf.dir == null && props.pdf.ext == null){
-      throw new Error("PDF service must be initialized with the pdf configuration. Call pdfService.init(props);");
-    }
+        start: function(){
+        if(props.pdf.dir == null && props.pdf.ext == null){
+            throw new Error("PDF service must be initialized with the pdf configuration. Call pdfService.init(props);");
+        }
 
-    var filename = "palette-" + Date.now().toString();
-    var filepath = __dirname + props.pdf.dir + "/" + filename + props.pdf.ext;
+        var filename = "palette-" + Date.now().toString();
+        var filepath = __dirname + props.pdf.dir + "/" + filename + props.pdf.ext;
 
-    this.doc = new PDFDocument({
-      layout: 'portrait',
-      size: 'LEGAL',
-      margin:10
-    });
-    this.doc.pipe(fs.createWriteStream(filepath));
+        this.doc = new PDFDocument({
+            layout: 'portrait',
+            size: 'LEGAL',
+            margin:10
+        });
+        this.doc.pipe(fs.createWriteStream(filepath));
 
-    return filename;
-  },
+        return filename;
+    },
 
-  total: function(palette){
-      var total = 0;
+    total: function(palette){
+        var total = 0;
 
-      for(var i = 0; i < palette.rows.length; i++){
-          for(var j = 0; j < palette.rows[i].length; j++){
-              total += palette.rows[i][j];
-          }
-      }
+        for(var i = 0; i < palette.rows.length; i++){
+            for(var j = 0; j < palette.rows[i].length; j++){
+                total += palette.rows[i][j];
+            }
+        }
 
-      return total;
-  },
+        return total;
+    },
 
-  generatePalettes: function(palettes){
-    var totalPalettes = palettes.length;
-    var currentPalette = 1, cumulTotal = 0;
-    for(var i = 0; i < palettes.length; i++){
-      var palette = palettes[i];
+    generatePalettes: function(palettes){
+        var totalPalettes = palettes.length;
+        var currentPalette = 1, cumulTotal = 0;
+        for(var i = 0; i < palettes.length; i++){
+            var palette = palettes[i];
+            console.log(palette);
 
-      var currentTotal = this.total(palette);
-      cumulTotal += currentTotal;
+            var currentTotal = this.total(palette);
+            cumulTotal += currentTotal;
 
-      this.generateLabel({
-        address: palette.address,
-        currentPalette: currentPalette++,
-        totalPalettes: totalPalettes,
-        currentQty: currentTotal,
-        cumulTotal: cumulTotal,
-        totalQty: palette.address.quantity,
-        itemsPerPacket: palette.itemsPerPacket,
-        packetsPerLevel: palette.packetsPerLevel
-      })
-    }
-  },
+            this.generateLabel({
+                date: palette.date,
+                address: palette.address,
+                currentPalette: currentPalette++,
+                totalPalettes: totalPalettes,
+                currentQty: currentTotal,
+                cumulTotal: cumulTotal,
+                totalQty: palette.address.quantity,
+                itemsPerPacket: palette.itemsPerPacket,
+                packetsPerLevel: palette.packetsPerLevel
+            })
+        }
+    },
 
-  generateLabel: function(options){
+    generateLabel: function(options){
 
-    if(this.doc == null){
-      throw Error("You must call init first");
-    }
-    // Pipe it's output somewhere, like to a file or HTTP response
-    // See below for browser usage
-
-
-    var address = options.address;
+        if(this.doc == null){
+          throw Error("You must call init first");
+        }
+        // Pipe it's output somewhere, like to a file or HTTP response
+        // See below for browser usage
 
 
-    this.doc.fontSize(14)
-    cursor=this.doc.text("", 30, 200);
+        var address = options.address;
 
-    if(isDefined(address.dest)){
-      cursor.text(address.dest)
-    }
 
-    if(isDefined(address.company)){
-      cursor.text(address.company)
-    }
+        this.doc.fontSize(14);
+        var cursor = this.doc.text("", 30, 200);
 
-    if(isDefined(address.add_comp)){
-      cursor.text(address.add_comp)
-    }
+        cursor.text(address.dest ? address.dest : " ")
 
-    if(isDefined(address.address)){
-      cursor.text(address.address.toUpperCase())
-    }
+        cursor.text(address.company ? address.company : " ");
 
-    if(isDefined(address.city)){
-      cursor.text(address.city.toUpperCase() + " " + address.province.toUpperCase() + "")
-    }
+        cursor.text(address.add_comp ? address.add_comp : " ");
 
-    if(isDefined(address.zipcode)){
-      cursor.text(address.zipcode.toUpperCase())
-    }
+        cursor.text(address.address ? address.address.toUpperCase() : " ")
 
-    if(isDefined(address.phone)){
-      cursor.text('Telephone ' + address.phone);
-    }
+        cursor.text(address.city ? address.city.toUpperCase() + " " + address.province.toUpperCase() : " ");
 
-    // line
-    this.addLine(310);
-    var now = Date.now();
-    this.doc.text("EDITION: " + now.toLocaleString("en-US", {formatMatcher: 'year, month, day', year: 'numeric', month: '2-digit', day: '2-digit'}))
-    this.doc.text("TRANSPORTEUR: ")
+        cursor.text(address.zipcode ? address.zipcode.toUpperCase() : " ");
 
-    this.addLine(355);
+        cursor.text(address.phone ? 'Telephone ' + address.phone : " ");
 
-    this.doc.text("").moveDown();
-    this.doc.text("Skid # : " + options.currentPalette + "  /  " + options.totalPalettes).moveDown();;
+        // line
+        this.addLine(318);
+        var now = Date.now();
+        this.doc.text("EDITION: " + options.date);
+        this.doc.text("TRANSPORTEUR: ");
 
-    this.doc.text("QTE CETTE PALETTE: " + options.currentQty).moveDown();
+        this.addLine(363);
 
-    this.doc.text("Qte cumulative: " + options.cumulTotal);
-    this.doc.text("Qte commandee: " + Math.round(options.totalQty)).moveDown();
+        this.doc.text("").moveDown();
+        this.doc.text("Skid # : " + options.currentPalette + "  /  " + options.totalPalettes).moveDown();
 
-    this.addLine(505);
-    this.doc.text("Copies / Paquet: " + options.itemsPerPacket);
-    this.doc.text("Paquet / Rangee: " + options.packetsPerLevel);
+        this.doc.text("QTE CETTE PALETTE: " + options.currentQty).moveDown();
 
-    this.addLine(550);
+        this.doc.text("Qte cumulative: " + options.cumulTotal);
+        this.doc.text("Qte commandee: " + Math.round(options.totalQty)).moveDown();
 
-    if(address.day && address.hour){
-      this.doc.text("LIVRAISON " + address.day.toUpperCase() + " AVANT " + address.hour.toUpperCase());
-      this.doc.text("??? EN VRAC ???");
-    }
+        this.addLine(513);
+        this.doc.text("Copies / Paquet: " + options.itemsPerPacket);
+        this.doc.text("Paquet / Rangee: " + options.packetsPerLevel);
 
-    this.doc.text("LES AFFAIRES");
+        this.addLine(558);
 
-    this.doc.addPage();
-  },
+        if(address.day && address.hour){
+            this.doc.text("LIVRAISON " + address.day.toUpperCase() + " AVANT " + address.hour.toUpperCase());
+        }
 
-  addLine: function(y){
+        this.doc.text("LES AFFAIRES");
+
+        this.doc.addPage();
+    },
+
+    addLine: function(y){
     this.doc.text("").moveDown();
     this.doc.moveTo(10, y).lineTo(300, y).stroke();
-  },
+    },
 
-  close: function(){
-    this.doc.end()
-  }
+    close: function(){
+        this.doc.end()
+    }
 }
