@@ -14,7 +14,7 @@
   "envT7": {
     "min": 400,
     "max": 1100,
-    "available": true,
+    "available": false,
     "price": "3.3"
   },
   "envT6": {
@@ -30,7 +30,8 @@
   "palette": {
     "maxPacketsPerLevel": 11,
     "maxItemsPerPacket": 25,
-    "maxLevelsPerPalette": 10
+    "maxLevelsPerPalette": 10,
+    "distrib": "LMPI,Distribution Directe,Messagerie Dynamique,Voir Montreal"
   },
   "port": 8080
 }

@@ -11,8 +11,8 @@ define(['app'], function (app) {
 
 
         serverService.getConfiguration().success(function(config){
-					$scope.config = config;
-				})
+			$scope.config = config;
+		})
 
 
 

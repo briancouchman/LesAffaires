@@ -4,13 +4,34 @@ define(['app'], function (app) {
         function($scope, $upload, $http, $location, newspaperService, serverService, addressService){
             console.log("Starting Home Controller");
 
+            var config = {};
+            serverService.getConfiguration().success(function(_config){
+                config = _config;
+            });
+
+            var isInPalette = function(company){
+                var isInPalette= false;
+
+                var distrib = config.palette.distrib.split(",");
+                   console.log(distrib);
+
+                for(var i = 0; i < distrib.length; i++){
+                    if(company.toLowerCase() ==  distrib[i].toLowerCase()){
+                        isInPalette = true;
+                        break;
+                    }
+                }
+
+                return isInPalette;
+            }
+
+
+
             var splitAddresses = function(addresses){
                 $scope.paletteAddresses = [], 	$scope.shippingAddresses = [];
 
                 angular.forEach(addresses, function(address, idx){
-                    if(address.company == "LMPI" ||
-                        address.company == "Distribution Directe" ||
-                        address.company == "Voir Montreal"){
+                    if(isInPalette(address.company)){
                         $scope.paletteAddresses.push(address)
                     }else{
                         $scope.shippingAddresses.push(address)

@@ -103,7 +103,7 @@ module.exports = {
         // line
         this.addLine(318);
         var now = Date.now();
-        this.doc.text("EDITION: " + options.date);
+        this.doc.text("EDITION: " + new Date(options.date));
         this.doc.text("TRANSPORTEUR: ");
 
         this.addLine(363);
@@ -123,7 +123,7 @@ module.exports = {
         this.addLine(558);
 
         if(address.day && address.hour){
-            this.doc.text("LIVRAISON " + address.day.toUpperCase() + " AVANT " + address.hour.toUpperCase());
+            this.doc.text("LIVRAISON " + address.day.toUpperCase() + " " + address.hour.toUpperCase());
         }
 
         this.doc.text("LES AFFAIRES");
