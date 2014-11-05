@@ -13,15 +13,13 @@ define(['app'], function (app) {
                 var isInPalette= false;
 
                 var distrib = config.palette.distrib.split(",");
-                   console.log(distrib);
 
                 for(var i = 0; i < distrib.length; i++){
-                    if(company.toLowerCase() ==  distrib[i].toLowerCase()){
+                    if(company != null && (company.toLowerCase() ==  distrib[i].toLowerCase())){
                         isInPalette = true;
                         break;
                     }
                 }
-
                 return isInPalette;
             }
 
@@ -113,6 +111,9 @@ define(['app'], function (app) {
                 }
 
                 angular.forEach($scope.shippingAddresses, function(address, idx){
+                    console.log(address.address);
+
+
                     serverService.calculateShipping(address, $scope.numberOfPages).success(function(shipping){
                         console.log("shipping " + shipping);
 
@@ -154,7 +155,6 @@ define(['app'], function (app) {
                             palette.date = $scope.date;
                         });
 
-                        console.log(palettes);
                         $scope.paletteBlocks.push(palettes);
                     })
                 });
