@@ -27,7 +27,7 @@ module.exports = {
 
         this.doc = new PDFDocument({
             layout: 'portrait',
-            size: 'LEGAL',
+            size: 'LETTER',
             margin:10
         });
         this.doc.pipe(fs.createWriteStream(filepath));

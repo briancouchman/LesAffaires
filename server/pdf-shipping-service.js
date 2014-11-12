@@ -9,11 +9,11 @@ var isDefined = function(obj){
 
 var addLesAffairesLogo = function(doc){
 
-  doc.image(__dirname + '/img/logo_lesaffaires.png', 5, 15, {width: 150});
+  doc.image(__dirname + '/img/lesaffairesbw.jpg', 15, 15, {width: 150});
 
   doc.fontSize(8);
   doc.font(__dirname + '/font/Arial_Narrow.ttf');
-  doc.text("1100, boul. René-Lévesque Ouest, 24e étage", 200, 20, {width: 150})
+  doc.text("1100, boul. René-Lévesque Ouest, 24e étage", 195, 20, {width: 150})
      .text("Montréal (Québec) H3B 4X9").moveDown(0.4)
      .text("Téléphone: 514-392-9000");
 
@@ -134,18 +134,18 @@ module.exports = {
 
 
     this.doc.fontSize(20)
-            .text(options.currentBox + "/" + options.totalBoxes, 280, 80, {width: 60, align: 'right'});
+            .text(options.currentBox + "/" + options.totalBoxes, 270, 80, {width: 60, align: 'right'});
 
     this.doc.fontSize(11)
-            .text(options.currentQty + " copies", 280, 120, {width: 60, align: 'right'})
-            .text("(total " + Math.round(options.totalQty) + ")", 280, 130, {width: 60, align: 'right'});
+            .text(options.currentQty + " copies", 270, 120, {width: 60, align: 'right'})
+            .text("(total " + Math.round(options.totalQty) + ")", 270, 130, {width: 60, align: 'right'});
 
     this.doc.fontSize(11)
-            .text(this.getBoxType(options.boxType), 280, 150, {width: 60, align: 'right'});
+            .text(this.getBoxType(options.boxType), 270, 150, {width: 60, align: 'right'});
 
     if(isDefined(address.carrier)){
       this.doc.fontSize(11)
-              .text(address.carrier, 280, 180, {width: 60, align: 'right'});
+              .text(address.carrier, 270, 180, {width: 60, align: 'right'});
     }
 
     this.doc.addPage();
